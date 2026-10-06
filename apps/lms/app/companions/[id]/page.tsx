@@ -46,6 +46,7 @@ const CompanionSession = async ({ params }: CompanionSessionPageProps) => {
           caption={topic}
           companionId={id}
           seats={isLaw}
+          newTab={isLaw}
         />
       </main>
     );

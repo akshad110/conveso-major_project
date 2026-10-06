@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Bookmark, Clock } from "lucide-react";
@@ -39,9 +40,32 @@ const CompanionCard = ({
   bookmarked,
 }: CompanionCardProps) => {
   const pathname = usePathname();
+  const router = useRouter();
   const [saved, setSaved] = useState(bookmarked);
   const [pending, startTransition] = useTransition();
   const glow = getSubjectGlow(subject);
+
+  const openCourtroom = async () => {
+    const popup = window.open("about:blank", "_blank");
+    try {
+      const res = await fetch("/api/simulations/start", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ companionId: id, subject: "law", role: "prosecutor" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) {
+        popup?.close();
+        router.push(`/companions/${id}`);
+        return;
+      }
+      if (popup) popup.location.href = data.url;
+      else window.location.href = data.url;
+    } catch {
+      popup?.close();
+      router.push(`/companions/${id}`);
+    }
+  };
 
   const toggleBookmark = () => {
     // Flip first, reconcile after: a bookmark that waits on a round trip feels
@@ -102,13 +126,15 @@ const CompanionCard = ({
         <span className="meta">{formatDuration(duration)}</span>
       </div>
 
-      <Link href={`/companions/${id}`} className="btn-subject">
-        {subject === "law"
-          ? "Enter courtroom"
-          : subject === "language"
-            ? "Enter classroom"
-            : "Start session"}
-      </Link>
+      {subject === "law" ? (
+        <button type="button" className="btn-subject" onClick={openCourtroom}>
+          Enter courtroom
+        </button>
+      ) : (
+        <Link href={`/companions/${id}`} className="btn-subject">
+          {subject === "language" ? "Enter classroom" : "Start session"}
+        </Link>
+      )}
     </article>
   );
 };

@@ -39,6 +39,26 @@ export const SCENE_URLS: Record<SimulationKind, string | undefined> = {
     classroom: process.env.NEXT_PUBLIC_LANGUAGE_SCENE_URL,
 };
 
+/**
+ * The engine also serves a small demo page on its own host. A launch URL pointed
+ * at that host opens the demo instead of the 3D courtroom. Send those launches
+ * to the courtroom app; the engine stays on the websocket only.
+ */
+const COURTROOM_APP_URL = "https://conveso-major-project-2.onrender.com";
+
+export const sceneUrl = (kind: SimulationKind): string | undefined => {
+    const configured = SCENE_URLS[kind];
+    if (!configured || kind !== SIMULATION_KIND.COURTROOM) return configured;
+    try {
+        if (new URL(configured).hostname === "courtroom-engine.onrender.com") {
+            return COURTROOM_APP_URL;
+        }
+    } catch {
+        return configured;
+    }
+    return configured;
+};
+
 const secret = () => process.env.LAUNCH_TOKEN_SECRET;
 
 /**
@@ -48,7 +68,7 @@ const secret = () => process.env.LAUNCH_TOKEN_SECRET;
  * disabled button with a reason rather than as a 500 after the student clicks.
  */
 export const launchReadiness = (kind: SimulationKind) => {
-    const url = SCENE_URLS[kind];
+    const url = sceneUrl(kind);
     const key = secret();
     if (!url) return { ok: false as const, reason: `${kind === SIMULATION_KIND.COURTROOM ? "NEXT_PUBLIC_COURTROOM_URL" : "NEXT_PUBLIC_LANGUAGE_SCENE_URL"} is not set` };
     if (!key) return { ok: false as const, reason: "LAUNCH_TOKEN_SECRET is not set" };
@@ -110,7 +130,8 @@ export type VerifiedLaunch = {
  */
 const allowedOrigins = (): string[] => {
     const origins: string[] = [];
-    for (const url of Object.values(SCENE_URLS)) {
+    for (const kind of Object.keys(SCENE_URLS) as SimulationKind[]) {
+        const url = sceneUrl(kind);
         if (!url) continue;
         try {
             origins.push(new URL(url).origin);

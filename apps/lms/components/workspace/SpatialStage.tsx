@@ -56,6 +56,8 @@ interface Props {
    * the thing that appears, not a second button in front of it.
    */
   autoStart?: boolean;
+  /** Open the scene as its own browser page instead of an iframe. */
+  newTab?: boolean;
 }
 
 const STEPS = [
@@ -74,6 +76,7 @@ export default function SpatialStage({
   companionId,
   seats = false,
   autoStart = false,
+  newTab = false,
 }: Props) {
   const glow = getSubjectGlow(subject);
 
@@ -160,7 +163,10 @@ export default function SpatialStage({
     };
   }, [phase, src]);
 
-  const start = useCallback(async () => {
+  const start = useCallback(async (fromClick = false) => {
+    // Open the tab during the click. Doing it after the request returns is
+    // treated as a popup and the browser blocks it.
+    const popup = newTab && fromClick ? window.open("about:blank", "_blank") : null;
     setPhase("starting");
     setProblem(null);
     setStep(0);
@@ -181,6 +187,7 @@ export default function SpatialStage({
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
+        popup?.close();
         // The server has already decided what a student may be told. Show that
         // sentence; the reason behind it is in the server log.
         setProblem(data.error || "Could not start the session.");
@@ -191,12 +198,14 @@ export default function SpatialStage({
       setStep(2);
       setSessionId(data.sessionId ?? null);
       setLaunchUrl(data.url ?? null);
+      if (popup && data.url) popup.location.href = data.url;
       setPhase("live");
     } catch {
+      popup?.close();
       setProblem("Could not reach Converso. Check your connection and try again.");
       setPhase("failed");
     }
-  }, [companionId, subject, seats, role]);
+  }, [companionId, subject, seats, role, newTab]);
 
   // Defer one tick so React's development remount cancels the first call
   // before it hits the server, and a later visit still launches again.
@@ -235,6 +244,30 @@ export default function SpatialStage({
   }
 
   /* --- running ----------------------------------------------------------- */
+
+  if (phase === "live" && launchUrl && newTab) {
+    return (
+      <div className="panel relative flex h-full min-h-0 flex-col overflow-hidden p-0">
+        <Header title={title} glow={glow} status="opened" />
+        <div className="grid min-h-0 flex-1 place-items-center p-8">
+          <div className="max-w-sm text-center">
+            <p className="font-display text-lg text-[var(--ink)]">Opened in a new tab</p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--ink-dim)]">
+              The 3D {title} is in the other tab. If the browser blocked it, open it from here.
+            </p>
+            <a
+              href={launchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-flame mt-7 inline-flex w-full justify-center"
+            >
+              Open {title}
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (phase === "live" && launchUrl) {
     return (
@@ -336,7 +369,7 @@ export default function SpatialStage({
 
               <button
                 type="button"
-                onClick={start}
+                onClick={() => void start(true)}
                 className="btn-flame mt-7 w-full justify-center"
               >
                 {phase === "failed" ? (
