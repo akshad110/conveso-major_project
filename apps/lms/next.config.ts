@@ -1,15 +1,5 @@
 import {withSentryConfig} from "@sentry/nextjs";
 import type { NextConfig } from "next";
-import path from "path";
-import { createRequire } from "module";
-import { fileURLToPath } from "url";
-
-const require = createRequire(import.meta.url);
-const appDir = path.dirname(fileURLToPath(import.meta.url));
-
-function packageDir(name: string) {
-  return path.dirname(require.resolve(`${name}/package.json`, { paths: [appDir] }));
-}
 
 const nextConfig: NextConfig = {
     typescript: {
@@ -22,18 +12,7 @@ const nextConfig: NextConfig = {
       remotePatterns: [
           { hostname: 'img.clerk.com'}
       ]
-  },
-  // Classroom and courtroom keep their own React 18. The LMS build must use
-  // the one React 19 at the repo root, or prerender crashes inside styled-jsx.
-  webpack: (config) => {
-    config.resolve = config.resolve ?? {};
-    config.resolve.alias = {
-      ...(config.resolve.alias ?? {}),
-      react: packageDir("react"),
-      "react-dom": packageDir("react-dom"),
-    };
-    return config;
-  },
+  }
 };
 
 export default withSentryConfig(withSentryConfig(withSentryConfig(nextConfig, {

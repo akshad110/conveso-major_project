@@ -28,7 +28,7 @@ import { useClassroomSession } from "@/session/useClassroomSession";
  * Linear is the closer of the two survivors; ACESFilmic would crush the dark
  * plum ground to grey.
  */
-const TONE_MAPPING = THREE.NeutralToneMapping ?? THREE.LinearToneMapping;
+const TONE_MAPPING = THREE.LinearToneMapping;
 
 const itemPlacement = {
   default: {

@@ -33,9 +33,10 @@
     "build:courtroom": "npm run build --workspace apps/courtroom"
   },
   "engines": {
-    "node": ">=18.17"
+    "node": ">=20.18.1 <23"
   },
   "dependencies": {
+    "next": "15.3.2",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
