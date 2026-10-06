@@ -129,17 +129,17 @@ export type VerifiedLaunch = {
  * `credentials: include` usable if it is ever needed.
  */
 const allowedOrigins = (): string[] => {
-    const origins: string[] = [];
+    const origins = new Set<string>([new URL(COURTROOM_APP_URL).origin]);
     for (const kind of Object.keys(SCENE_URLS) as SimulationKind[]) {
         const url = sceneUrl(kind);
         if (!url) continue;
         try {
-            origins.push(new URL(url).origin);
+            origins.add(new URL(url).origin);
         } catch {
             console.warn("[launch] ignoring unparseable scene URL:", url);
         }
     }
-    return origins;
+    return [...origins];
 };
 
 export const corsHeaders = (request: Request): Record<string, string> => {

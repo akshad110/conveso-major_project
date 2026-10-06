@@ -31,7 +31,23 @@ const OFF = /^(off|none|false|0|disabled)$/i
 function configuredUrl() {
   const configured = import.meta.env?.VITE_COURT_WS_URL
   if (configured === undefined || configured === '') return ENGINE_URL
-  return OFF.test(String(configured).trim()) ? null : configured
+  const raw = String(configured).trim()
+  if (OFF.test(raw)) return null
+
+  // A site URL pasted into the socket setting becomes wss://https//host and
+  // the browser refuses it. Peel every stacked scheme, then keep the host.
+  let rest = raw
+  for (let i = 0; i < 4; i++) {
+    const next = rest
+      .replace(/^[a-z][a-z0-9+.-]*:\/\//i, '')
+      .replace(/^[a-z][a-z0-9+.-]*\/\//i, '')
+    if (next === rest) break
+    rest = next
+  }
+  const host = rest.replace(/^\/+/, '').split(/[/?#]/)[0]
+  if (!host) return ENGINE_URL
+  const local = host.startsWith('localhost') || host.startsWith('127.0.0.1')
+  return `${local ? 'ws' : 'wss'}://${host}`
 }
 
 const DEFAULT_URL = configuredUrl()

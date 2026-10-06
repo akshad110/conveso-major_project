@@ -122,6 +122,10 @@ export function useLaunchedSession() {
    * of that tag, editing one of them broke the button silently.
    */
   const returnToLesson = useCallback(() => {
+    if (!window.parent || window.parent === window) {
+      if (launchTarget) window.location.assign(launchTarget)
+      return
+    }
     try {
       window.parent?.postMessage(
         {
@@ -133,7 +137,7 @@ export function useLaunchedSession() {
     } catch {
       /* not framed, or a hostile parent. Nothing useful to do either way. */
     }
-  }, [])
+  }, [launchTarget])
 
   /* --- 4: taking the seat Converso sold ---------------------------------- */
 
