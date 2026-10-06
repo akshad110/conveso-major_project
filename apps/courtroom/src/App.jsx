@@ -47,7 +47,7 @@ export default function App() {
    * choose who to be in it. Nothing is lost by covering that screen because the
    * socket holds the court closed until a seat is taken.
    */
-  const [cutscene, setCutscene] = useState('opening')
+  const [cutscene, setCutscene] = useState(null)
   /**
    * The closing plays once. A ref rather than state because the trial can report
    * CASE_CLOSED more than once — every STATE message after the verdict carries
@@ -65,6 +65,7 @@ export default function App() {
   const transcriptOpen = useCourtStore((s) => s.transcriptOpen)
   const clerkHover = useCourtStore((s) => s.clerkHover)
   const phase = useCourtStore((s) => s.court?.phase)
+  const startDismissed = useCourtStore((s) => s.human.startDismissed)
 
   useEffect(() => {
     if (phase !== 'CASE_CLOSED' || closingPlayed.current) return
@@ -173,7 +174,7 @@ export default function App() {
         * directly, which is exactly what a student being graded should not have.
         * Standalone keeps it, and keeps the H key.
         */}
-      {session.launched ? null : showControls ? (
+      {session.launched || !startDismissed ? null : showControls ? (
         <ControlPanel onClose={toggleControls} />
       ) : (
         <button className="cp-launch grain" onClick={toggleControls} title="Open controls (H)">

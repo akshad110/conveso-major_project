@@ -26,11 +26,22 @@ import { applyCourtEvent, holdPresentation, releasePresentation } from './courtE
 import { useCourtStore } from './useCourtStore'
 
 const ENGINE_URL = 'ws://127.0.0.1:4177'
+/** The hearing process. The 3D site and the classroom are not this. */
+const PRODUCTION_ENGINE = 'wss://courtroom-engine.onrender.com'
+const NOT_THE_ENGINE = new Set([
+  'conveso-major-project.onrender.com',
+  'conveso-major-project-1.onrender.com',
+  'conveso-major-project-2.onrender.com',
+])
 const OFF = /^(off|none|false|0|disabled)$/i
 
 function configuredUrl() {
   const configured = import.meta.env?.VITE_COURT_WS_URL
-  if (configured === undefined || configured === '') return ENGINE_URL
+  const pageHost = typeof window !== 'undefined' ? window.location.hostname : ''
+  const deployed = pageHost.endsWith('.onrender.com')
+  if (configured === undefined || configured === '') {
+    return deployed ? PRODUCTION_ENGINE : ENGINE_URL
+  }
   const raw = String(configured).trim()
   if (OFF.test(raw)) return null
 
@@ -45,8 +56,12 @@ function configuredUrl() {
     rest = next
   }
   const host = rest.replace(/^\/+/, '').split(/[/?#]/)[0]
-  if (!host) return ENGINE_URL
-  const local = host.startsWith('localhost') || host.startsWith('127.0.0.1')
+  const bare = (host || '').split(':')[0]
+  const local = !bare || bare.startsWith('localhost') || bare.startsWith('127.0.0.1')
+  // A missing setting, or the classroom / LMS address pasted in by mistake,
+  // leaves this room as a model with no hearing. On Render, use the engine.
+  if (deployed && (local || NOT_THE_ENGINE.has(bare))) return PRODUCTION_ENGINE
+  if (!host) return deployed ? PRODUCTION_ENGINE : ENGINE_URL
   return `${local ? 'ws' : 'wss'}://${host}`
 }
 

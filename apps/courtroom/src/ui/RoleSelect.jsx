@@ -26,15 +26,21 @@ export default function RoleSelect() {
   const dismissStart = useCourtStore((s) => s.dismissStart)
   const [taking, setTaking] = useState(null)
   const [caseId, setCaseId] = useState(caseFromLocation)
+  const [queuedRole, setQueuedRole] = useState(undefined)
 
   useEffect(() => {
     if (connection !== 'open' || startDismissed) return
     sendCourtCommand({ type: 'SET_CASE', caseId })
-  }, [connection, caseId, startDismissed])
+    if (queuedRole === undefined) return
+    if (queuedRole) sendCourtCommand({ type: 'SET_HUMAN_ROLE', role: queuedRole })
+    sendCourtCommand({ type: 'START' })
+    setQueuedRole(undefined)
+    dismissStart()
+  }, [connection, caseId, startDismissed, queuedRole, dismissStart])
 
-  // The room stays visible until the engine is up. Once it is, both cases are
-  // on this screen and a seat can be taken.
-  if (startDismissed || connection !== 'open') return null
+  // The cases are the front door. Waiting for the engine before drawing them
+  // is how the page became a model with a developer panel and no hearing.
+  if (startDismissed) return null
 
   const local = CASES.find((matter) => matter.id === caseId) || CASES[0]
   const live = courtCase?.id === caseId ? courtCase : null
@@ -48,7 +54,12 @@ export default function RoleSelect() {
 
   const take = (role) => {
     if (taking) return
-    setTaking(role)
+    setTaking(role ?? 'watch')
+    if (connection !== 'open') {
+      setQueuedRole(role)
+      return
+    }
+    sendCourtCommand({ type: 'SET_CASE', caseId })
     if (role) sendCourtCommand({ type: 'SET_HUMAN_ROLE', role })
     sendCourtCommand({ type: 'START' })
     dismissStart()
@@ -95,7 +106,7 @@ export default function RoleSelect() {
               key={seat.role}
               type="button"
               className="seat grain"
-              disabled={Boolean(taking) || connection !== 'open'}
+              disabled={Boolean(taking)}
               data-taking={taking === seat.role ? 'yes' : 'no'}
               onClick={() => take(seat.role)}
             >
@@ -110,11 +121,19 @@ export default function RoleSelect() {
         <button
           type="button"
           className="start-watch"
-          disabled={Boolean(taking) || connection !== 'open'}
+          disabled={Boolean(taking)}
           onClick={() => take(null)}
         >
           Or watch the AI try the case
         </button>
+
+        {connection !== 'open' ? (
+          <p className="start-ask">
+            {queuedRole !== undefined
+              ? 'Waking the hearing. Your seat is held.'
+              : 'Both cases are here. The hearing connects in the background.'}
+          </p>
+        ) : null}
 
         {error ? <div className="start-error">{error}</div> : null}
       </div>
