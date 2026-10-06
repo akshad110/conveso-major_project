@@ -1000,6 +1000,29 @@ body {
   background: linear-gradient(90deg, transparent, var(--flame), transparent);
 }
 
+.start-cases {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.start-case {
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-dim);
+  font: 600 12px/1 var(--font-body);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.start-case[data-on='yes'] {
+  border-color: var(--flame);
+  color: var(--ink);
+}
+
 .start-eyebrow {
   color: var(--ink-faint);
   font: 600 9.5px/1 var(--font-body);

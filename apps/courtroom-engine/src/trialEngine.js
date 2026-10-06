@@ -120,6 +120,29 @@ export class TrialEngine {
 
   // --- lifecycle ---------------------------------------------------------------
 
+  /**
+   * Swap the matter before anyone has taken a seat.
+   * Both shipped cases live on disk: state-v-malhotra and state-v-rane.
+   */
+  loadMatter(caseId) {
+    if (this.running || this.driving || this.turnsTaken > 0) {
+      this.broadcast(buildError('The hearing has already started.', { command: 'SET_CASE' }))
+      return this.snapshot()
+    }
+    const id = String(caseId || '').trim()
+    if (!id) {
+      this.broadcast(buildError('Name a case.', { command: 'SET_CASE' }))
+      return this.snapshot()
+    }
+    if (this.caseManager.data?.caseId === id) return this.snapshot()
+    this.caseManager = loadCase(id)
+    this.provider = attachScript(createProvider({ log: false }), this.caseManager, this.log)
+    this.vocabulary = caseVocabulary(this.caseManager)
+    this.reset()
+    this.#emitState('case selected')
+    return this.snapshot()
+  }
+
   reset() {
     this.queue?.stop()
     // A person waiting on a turn that belongs to a trial being torn down is
@@ -1171,6 +1194,8 @@ export class TrialEngine {
           this.speed = Number(payload.speed) || 1
           this.queue.speed = this.speed
           return this.snapshot()
+        case 'SET_CASE':
+          return this.loadMatter(payload.caseId || payload.case)
 
         // --- the human seat ---
         // These four are the whole client-side surface of playing a role. None of

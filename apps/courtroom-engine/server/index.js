@@ -40,7 +40,7 @@ const sockets = new Set();
 /** Commands that drive the AI trial rather than the developer dispatch path. */
 const TRIAL_COMMANDS = new Set([
   "START", "START_TRIAL", "STEP", "NEXT_TURN", "PAUSE", "RESUME", "STOP",
-  "CALL_WITNESS", "SET_SPEED",
+  "CALL_WITNESS", "SET_SPEED", "SET_CASE",
   // The human seat: claiming a role, and answering when the court asks.
   "SET_HUMAN_ROLE", "HUMAN_ACTION", "HUMAN_HANDOFF", "HUMAN_PASS"
 ]);

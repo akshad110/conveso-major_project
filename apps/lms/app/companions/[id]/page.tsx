@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { getSubjectColor, getSubjectGlow, formatDuration } from "@/lib/utils";
 import CompanionComponent from "@/components/CompanionComponent";
-import SpatialStage from "@/components/workspace/SpatialStage";
+import SceneDoor from "@/components/SceneDoor";
 
 interface CompanionSessionPageProps {
   params: Promise<{ id: string }>;
@@ -22,34 +22,10 @@ const CompanionSession = async ({ params }: CompanionSessionPageProps) => {
   if (!user) redirect("/sign-in");
   if (!name) redirect("/companions");
 
-  // Law and language are rooms, not documents. The click on the companion is
-  // the launch: the 3D scene fills the page and starts on its own.
+  // Law and language are rooms on their own sites. Open those links; do not
+  // wait on the session API, which is what was returning 500.
   if (subject === "law" || subject === "language") {
-    const isLaw = subject === "law";
-    return (
-      <main className="scene-launch">
-        <SpatialStage
-          autoStart
-          subject={subject}
-          title={isLaw ? "courtroom" : "classroom"}
-          description={
-            isLaw
-              ? "The hearing itself — bench, box and counsel — opening in this page."
-              : "The language classroom. The room opens here; spoken answers need a model only if you ask the teacher."
-          }
-          envVar={isLaw ? "NEXT_PUBLIC_COURTROOM_URL" : "NEXT_PUBLIC_LANGUAGE_SCENE_URL"}
-          src={
-            isLaw
-              ? process.env.NEXT_PUBLIC_COURTROOM_URL
-              : process.env.NEXT_PUBLIC_LANGUAGE_SCENE_URL
-          }
-          caption={topic}
-          companionId={id}
-          seats={isLaw}
-          newTab={isLaw}
-        />
-      </main>
-    );
+    return <SceneDoor kind={subject} />;
   }
 
   const glow = getSubjectGlow(subject);
