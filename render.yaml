@@ -78,7 +78,7 @@ services:
     region: singapore
     dockerfilePath: deploy/engine.Dockerfile
     dockerContext: .
-    healthCheckPath: /api/state
+    healthCheckPath: /healthz
     envVars:
       - key: HOST
         value: 0.0.0.0

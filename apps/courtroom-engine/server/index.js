@@ -75,7 +75,22 @@ function cancelAutostart() {
 }
 
 const server = http.createServer((req, res) => {
-  const url = new URL(req.url || "/", `http://${req.headers.host}`);
+  let url;
+  try {
+    url = new URL(req.url || "/", `http://${req.headers.host || "127.0.0.1"}`);
+  } catch {
+    res.writeHead(400);
+    res.end("Bad request");
+    return;
+  }
+
+  // Render's deploy check requests this path and gives up if it is slow or
+  // missing. Keep it free of file reads and trial state.
+  if (url.pathname === "/healthz" || url.pathname === "/health") {
+    res.writeHead(200, { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" });
+    res.end("ok");
+    return;
+  }
 
   if (url.pathname === "/api/state") {
     sendJson(res, engine.snapshot());

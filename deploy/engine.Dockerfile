@@ -28,7 +28,6 @@ COPY --chown=node:node apps/courtroom-engine/cases ./cases
 # container it means "refuse every connection", which presents as a health
 # check that never passes and no log line explaining why.
 ENV HOST=0.0.0.0
-ENV PORT=4177
 
 # The case this process serves, fixed for the life of the process — there is no
 # command to change it afterwards. One case per machine is a real constraint;
@@ -38,7 +37,9 @@ ENV COURT_CASE=state-v-rane
 # Set COURT_LLM_PROVIDER and the matching key as deployment secrets, not here.
 # With neither, the engine runs its offline heuristics and says so on startup —
 # a hearing that continues honestly rather than one that stalls.
-EXPOSE 4177
+# Render assigns port 10000 and scans that port. Advertising 4177 makes the
+# scan time out, then notice 10000 only after the deploy has already failed.
+EXPOSE 10000
 
 # No npm in the entrypoint. `npm start` would fork a shell and a second process,
 # which swallows SIGTERM and turns every deploy into a 30-second kill timeout.
