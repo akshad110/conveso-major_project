@@ -1,0 +1,642 @@
+{
+  "caseId": "state-v-rane",
+  "title": "State versus Kabir Rane",
+  "jurisdiction": "In the Court of the LXII Additional City Civil and Sessions Judge, Bengaluru City. Sessions Case 218 of 2025, committed by the XIV ACMM, Bengaluru.",
+  "charges": [
+    {
+      "id": "CH1",
+      "statute": "BNS s.103(1)",
+      "label": "Murder",
+      "particulars": "That on the night of 11-12 September 2025, at Thorne's Timepieces, 14 Nightingale Road, Bengaluru, the accused Kabir Rane caused the death of Julian Thorne by striking him once on the head with a brass carriage clock, with the intention of causing such bodily injury as was likely to cause death.",
+      "elements": [
+        "the death of Julian Thorne",
+        "that the death was caused by the act of the accused",
+        "that the act was done with the intention or knowledge described in s.101",
+        "that the act is not brought within any exception to s.101"
+      ]
+    },
+    {
+      "id": "CH2",
+      "statute": "BNS s.305(a)",
+      "label": "Theft in a building used as a place of trade",
+      "particulars": "That in the course of the same transaction the accused dishonestly removed from the said premises one Patek Philippe wristwatch, reference 3970, the property of the deceased.",
+      "elements": [
+        "dishonest intention to take moveable property",
+        "the property was taken out of the possession of the deceased",
+        "the taking was without consent",
+        "the taking was from a building used as a place of trade"
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "F01",
+      "type": "procedural",
+      "text": "On 12 September 2025 at 02:40 hours a first information report was registered at Halasuru Gate Police Station on the complaint of the night patrol, recording the death of Julian Thorne, watchmaker, at his premises at 14 Nightingale Road.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F02",
+      "type": "procedural",
+      "text": "The accused Kabir Rane was arrested on 13 September 2025 and has pleaded not guilty to both charges.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F03",
+      "type": "procedural",
+      "text": "The body of Julian Thorne was found at 01:15 hours on 12 September 2025 by the night patrol, slumped at the workbench in the rear of the shop. The front door was standing open.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F04",
+      "type": "background",
+      "text": "Kabir Rane was apprenticed to Julian Thorne from March 2021 until June 2025, and was regarded in the trade as the finest young movement hand in the city.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F05",
+      "type": "background",
+      "text": "In June 2025 Thorne dismissed Rane, accusing him of removing a Patek Philippe reference 3970 from the workshop safe. No police complaint was ever lodged over that accusation and the watch was not recovered at the time.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F06",
+      "type": "background",
+      "text": "In 2023 Thorne gave Rane a pair of gold cufflinks engraved with the shop's mark, on the completion of his second year of apprenticeship.",
+      "knownTo": [
+        "prosecutor",
+        "defense",
+        "judge",
+        "witness",
+        "defendant"
+      ]
+    },
+    {
+      "id": "F07",
+      "type": "background",
+      "text": "Gopi Shetty has run the tea stall at the western end of Nightingale Road for eleven years and delivered tea to the shop twice daily, including to the workbench at the rear.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F08",
+      "type": "background",
+      "text": "The room Kabir Rane rents is in Shivajinagar, which lies east of Nightingale Road. His route home from the shop runs east.",
+      "knownTo": [
+        "prosecutor",
+        "defense",
+        "judge",
+        "witness",
+        "defendant"
+      ]
+    },
+    {
+      "id": "F09",
+      "type": "background",
+      "text": "Gopi Shetty owed Rs 4,10,000 to Chandra Finance, a private lender, on which payment had been outstanding since March 2025.",
+      "knownTo": [
+        "defense",
+        "judge"
+      ]
+    },
+    {
+      "id": "F10",
+      "type": "technical",
+      "text": "Camera 02 of the street CCTV covers the front elevation of the shop and the pavement outside it. No camera covers the rear service lane, by which the workshop can also be entered.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F11",
+      "type": "technical",
+      "text": "The recording from Camera 02 shows a man approaching from the east and entering the shop at 23:51 hours.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F12",
+      "type": "technical",
+      "text": "The recording carries a fault of exactly six minutes, from 23:52:00 to 23:58:00. The digital video recorder logged the interruption as a power event. Nothing whatever was recorded in that window.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F13",
+      "type": "technical",
+      "text": "When the recording resumes at 23:58:00 the shop door is standing open and the interior lights are off. At 23:58:56 a figure leaves the doorway and walks west, out of frame. The figure is not identifiable: no face is captured, and the build is heavier than that of the man who entered at 23:51.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F14",
+      "type": "technical",
+      "text": "The post-mortem conducted by Dr Meera Bhat records a single blunt-force injury to the left parietal region, death having occurred between 23:45 hours on 11 September and 00:15 hours on 12 September.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F15",
+      "type": "technical",
+      "text": "Three latent fingerprints recovered from the brass carriage clock, including one on the base by which it would be gripped to strike, were matched to Gopi Shetty.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F16",
+      "type": "technical",
+      "text": "No fingerprint of the accused was recovered from the striking surface or the base of the clock.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F17",
+      "type": "technical",
+      "text": "On 14 September 2025 the Patek Philippe reference 3970 was recovered under a panchnama from a tin box in the residence of Gopi Shetty.",
+      "knownTo": [
+        "all"
+      ]
+    },
+    {
+      "id": "F18",
+      "type": "contested",
+      "text": "The accused states that one of his gold cufflinks went missing from his room in the last week of August 2025, some two weeks before the death, and that he did not report the loss.",
+      "knownTo": [
+        "defense",
+        "judge",
+        "defendant"
+      ]
+    },
+    {
+      "id": "F19",
+      "type": "contested",
+      "text": "The accused states that he went to the shop that night to return the second cufflink and to ask Thorne to withdraw the accusation of theft, that Thorne refused to speak to him, and that he left within four or five minutes, during the window in which nothing was being recorded.",
+      "knownTo": [
+        "defense",
+        "judge",
+        "defendant"
+      ]
+    },
+    {
+      "id": "F20",
+      "type": "contested",
+      "text": "In his first statement Gopi Shetty told the police that he saw the accused enter at about 23:50, and that he later saw a second, heavier man in a coat near the shop door during the period of darkness. Two days later he gave an amended statement from which the second man was removed.",
+      "knownTo": [
+        "prosecutor",
+        "defense",
+        "judge"
+      ]
+    },
+    {
+      "id": "F21",
+      "type": "contested",
+      "text": "Elena Thorne states that after the dismissal her uncle described the accused as dishonest and said he would not have him in the shop again.",
+      "knownTo": [
+        "prosecutor",
+        "defense",
+        "judge",
+        "witness"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "at": "2021-03",
+      "text": "Kabir Rane begins his apprenticeship at Thorne's Timepieces."
+    },
+    {
+      "at": "2023-08",
+      "text": "Thorne gives Rane a pair of engraved gold cufflinks."
+    },
+    {
+      "at": "2025-03",
+      "text": "Gopi Shetty falls into arrears with Chandra Finance."
+    },
+    {
+      "at": "2025-06-18",
+      "text": "Thorne dismisses Rane, accusing him of taking a Patek Philippe 3970. No complaint is lodged."
+    },
+    {
+      "at": "2025-08-28",
+      "text": "Rane says one of the two cufflinks goes missing from his rented room."
+    },
+    {
+      "at": "2025-09-11 23:51",
+      "text": "Camera 02 records a man approaching from the east and entering the shop."
+    },
+    {
+      "at": "2025-09-11 23:52",
+      "text": "Camera 02 fails. The recording stops for six minutes."
+    },
+    {
+      "at": "2025-09-11 23:58",
+      "text": "The recording resumes. The door stands open, the lights are off."
+    },
+    {
+      "at": "2025-09-11 23:58:56",
+      "text": "A figure leaves the doorway and walks west, out of frame."
+    },
+    {
+      "at": "2025-09-12 01:15",
+      "text": "The night patrol finds Julian Thorne dead at the workbench."
+    },
+    {
+      "at": "2025-09-13",
+      "text": "Kabir Rane is arrested."
+    },
+    {
+      "at": "2025-09-14",
+      "text": "The Patek Philippe 3970 is recovered from the residence of Gopi Shetty."
+    }
+  ],
+  "victim": {
+    "id": "V_THORNE",
+    "name": "Julian Thorne",
+    "description": "Sixty-three. Watchmaker. Third generation of an Anglo-Indian family that has kept the shop on Nightingale Road since 1948. Exacting, solitary, and by every account a better judge of a movement than of a man."
+  },
+  "accused": {
+    "id": "D_RANE",
+    "name": "Kabir Rane",
+    "plea": "Not guilty to both charges."
+  },
+  "witnesses": [
+    {
+      "id": "W_KADAM",
+      "name": "Vaishali Kadam",
+      "role": "police",
+      "officialRole": "Sub-Inspector, Halasuru Gate Police Station, Investigating Officer",
+      "personality": "Methodical and unhurried. Will not overstate a finding, and will not pretend a gap in the investigation is not there.",
+      "relationshipToAccused": "None. Arrested him on 13 September.",
+      "confidence": 0.8,
+      "bias": "Institutional. Having charged the accused, she is reluctant to volunteer what the file does not support, though she will not deny it if asked directly.",
+      "biasStrength": 0.35,
+      "truthfulness": 0.95,
+      "emotionalState": "composed",
+      "reliabilityNote": "Truthful and precise. The weakness in her evidence is not honesty but framing: she led the investigation on the assumption that the man who entered at 23:51 is the man who left at 23:58, and never tested the alternative. Under cross she will concede the rear lane was uncovered, that the clock carried another man's prints, and that the watch was recovered elsewhere, because each is in the file.",
+      "knownFacts": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F07",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "F17",
+        "F20"
+      ],
+      "unknownFacts": [
+        "F06",
+        "F08",
+        "F09",
+        "F18",
+        "F19",
+        "F21"
+      ],
+      "speechStyle": "Short declarative sentences with the cadence of a case diary. Gives times to the minute. Says 'as per the record' and 'that is correct, sir' rather than volunteering."
+    },
+    {
+      "id": "W_GOPI",
+      "name": "Gopi Shetty",
+      "role": "witness",
+      "officialRole": "Tea stall proprietor, Nightingale Road",
+      "personality": "Voluble and over-helpful, then suddenly narrow when the question closes on him. Fills silence with detail nobody asked for.",
+      "relationshipToAccused": "Knew him for four years as the boy who came out for tea at four o'clock.",
+      "confidence": 0.9,
+      "bias": "He is protecting himself. Every answer is shaped to keep the account of that night pointing at someone else.",
+      "biasStrength": 0.95,
+      "truthfulness": 0.25,
+      "emotionalState": "agitated",
+      "reliabilityNote": "The least reliable witness in the case and the most confident. His first statement was close to true and he has been retreating from it ever since; the second man in the coat was himself. He will be emphatic about the accused's anger, vague about his own movements, and will become indignant rather than answer when asked about the debt or the amendment to his statement. He does not confess. Pressed hard on the recovery of the watch he will say it was given to him to sell and that he did not ask where it came from.",
+      "knownFacts": [
+        "F01",
+        "F03",
+        "F04",
+        "F05",
+        "F07",
+        "F09",
+        "F11",
+        "F12",
+        "F13",
+        "F17",
+        "F20"
+      ],
+      "unknownFacts": [
+        "F06",
+        "F08",
+        "F14",
+        "F15",
+        "F16",
+        "F18",
+        "F19",
+        "F21"
+      ],
+      "speechStyle": "Rapid, repetitive, warm on the surface. Repeats the questioner's last words back before answering. Says 'I am a simple man' and 'why would I lie, sir'."
+    },
+    {
+      "id": "W_THORNE",
+      "name": "Elena Thorne",
+      "role": "witness",
+      "officialRole": "Niece of the deceased",
+      "personality": "Controlled, articulate, grieving in a way that shows only in precision.",
+      "relationshipToAccused": "Met him perhaps a dozen times at the shop. Liked him until the dismissal.",
+      "confidence": 0.75,
+      "bias": "She believes her uncle's judgement was sound, so she believes the accusation of theft was sound, and everything that followed reads to her in that light.",
+      "biasStrength": 0.55,
+      "truthfulness": 0.9,
+      "emotionalState": "grieving",
+      "reliabilityNote": "Honest, and reporting a real conversation, but reporting her uncle's opinion rather than any fact she witnessed. She was not present that night. Under cross she will concede that her uncle never said the watch was taken by the accused in terms, only that it was gone and the boy had had the key, and that her uncle had also spoken of small parts going missing from the inventory over a longer period.",
+      "knownFacts": [
+        "F01",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F21"
+      ],
+      "unknownFacts": [
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "F17",
+        "F18",
+        "F19",
+        "F20"
+      ],
+      "speechStyle": "Careful, complete sentences. Corrects herself mid-sentence to be exact. Calls the deceased 'my uncle', never 'the deceased'."
+    },
+    {
+      "id": "W_REDDY",
+      "name": "Naveen Reddy",
+      "role": "witness",
+      "officialRole": "Sub-Inspector (Technical), District Cyber and Technical Cell",
+      "personality": "Literal to a fault. Answers the question asked and stops.",
+      "relationshipToAccused": "None.",
+      "confidence": 0.85,
+      "bias": "None recorded. Has no theory of the case and does not want one.",
+      "biasStrength": 0.05,
+      "truthfulness": 0.97,
+      "emotionalState": "neutral",
+      "reliabilityNote": "The most dependable witness in the case and useful to both sides. He will confirm that a man entered at 23:51 and that a figure left at 23:58:56, and he will equally confirm that neither is identifiable from the footage, that the six minutes are wholly absent, and that the figure leaving walks west while the accused's room lies east. He will not be drawn into saying who anyone is.",
+      "knownFacts": [
+        "F01",
+        "F03",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14"
+      ],
+      "unknownFacts": [
+        "F04",
+        "F05",
+        "F06",
+        "F08",
+        "F09",
+        "F15",
+        "F16",
+        "F17",
+        "F18",
+        "F19",
+        "F20",
+        "F21"
+      ],
+      "speechStyle": "Technical and flat. Quotes timecodes to the second. Says 'the recording does not show that' where a less careful witness would guess."
+    },
+    {
+      "id": "D_RANE",
+      "name": "Kabir Rane",
+      "role": "defendant",
+      "officialRole": "Accused",
+      "personality": "Quiet, proud, and very tired. Answers slowly because he is weighing every word, which reads badly and he knows it.",
+      "relationshipToAccused": "Self.",
+      "confidence": 0.6,
+      "bias": "His own account, which is true and sounds thin.",
+      "biasStrength": 0.2,
+      "truthfulness": 0.95,
+      "emotionalState": "resigned",
+      "reliabilityNote": "Telling the truth throughout and unable to prove any of it. He went to the shop to return the cufflink and ask to be cleared; Thorne would not speak to him; he left inside five minutes, during the blackout, and walked east. He cannot account for the cufflink found by the body because it was taken from his room and he never reported it. He will not invent a detail to fill a gap, and will say 'I don't know' where it costs him.",
+      "knownFacts": [
+        "F01",
+        "F02",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F18",
+        "F19"
+      ],
+      "unknownFacts": [
+        "F09",
+        "F15",
+        "F16",
+        "F17",
+        "F20",
+        "F21"
+      ],
+      "speechStyle": "Careful, plain English with a workshop precision to it. Reaches for the exact word and pauses to find it. Calls the deceased 'Mr Thorne'."
+    },
+    {
+      "id": "P_ESCORT",
+      "name": "Head Constable on escort duty",
+      "role": "police",
+      "officialRole": "Court escort",
+      "personality": "Silent unless addressed by the bench.",
+      "relationshipToAccused": "Custodial only.",
+      "confidence": 0.5,
+      "bias": "None recorded",
+      "biasStrength": 0,
+      "truthfulness": 0.9,
+      "emotionalState": "neutral",
+      "reliabilityNote": "Present for custody and order. Not a witness to anything in issue.",
+      "knownFacts": [
+        "F01",
+        "F02"
+      ],
+      "unknownFacts": [],
+      "speechStyle": "'Yes, Your Honour.' Nothing further.",
+      "testifies": false
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EXHIBIT_A",
+      "title": "Gold cufflink recovered beside the body",
+      "type": "PHYSICAL",
+      "description": "One gold cufflink engraved with the shop's mark, recovered from the floor approximately half a metre from the deceased's right hand. It is one of a pair given by the deceased to the accused in 2023. Its pair was produced by the accused from his room on arrest.",
+      "source": "Seized under mahazar at the scene, 12 September 2025.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": [
+        "F06",
+        "F18"
+      ]
+    },
+    {
+      "id": "EXHIBIT_B",
+      "title": "Post-mortem report, Dr Meera Bhat",
+      "type": "DOCUMENT",
+      "description": "Single blunt-force injury to the left parietal region consistent with the brass carriage clock. Death between 23:45 on 11 September and 00:15 on 12 September. No defensive injuries.",
+      "source": "Victoria Hospital mortuary, report dated 13 September 2025.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": [
+        "F14"
+      ]
+    },
+    {
+      "id": "EXHIBIT_C",
+      "title": "Fingerprint report on the brass carriage clock",
+      "type": "DOCUMENT",
+      "description": "Three latent prints developed on the clock, one of them on the base by which the object would be gripped to strike. All three matched to Gopi Shetty. No print of the accused on the striking surface or the base.",
+      "source": "Regional Forensic Science Laboratory, report dated 22 September 2025.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": [
+        "F15",
+        "F16"
+      ]
+    },
+    {
+      "id": "EXHIBIT_D",
+      "title": "CCTV recording, Camera 02, Nightingale Road",
+      "type": "VIDEO",
+      "description": "Twenty minutes of the front elevation of the shop. A man approaches from the east and enters at 23:51. The recording then fails for six minutes, from 23:52:00 to 23:58:00. When it resumes the door is open and the lights are off, and at 23:58:56 a figure of heavier build leaves the doorway and walks west. Neither man is identifiable and the rear service lane is not covered.",
+      "source": "Seized from the street CCTV contractor under requisition dated 12 September 2025. DVR event log produced with it.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": [
+        "F10",
+        "F11",
+        "F12",
+        "F13"
+      ]
+    },
+    {
+      "id": "EXHIBIT_E",
+      "title": "Statement of Gopi Shetty with amendment sheet",
+      "type": "DOCUMENT",
+      "description": "The statement recorded on 12 September, in which the witness describes a second and heavier man in a coat near the shop door during the period of darkness, together with the amended statement of 14 September from which that man has been removed.",
+      "source": "Case diary, Halasuru Gate Police Station.",
+      "proponent": "defense",
+      "status": "MARKED",
+      "relatedFacts": [
+        "F20"
+      ]
+    },
+    {
+      "id": "EXHIBIT_F",
+      "title": "Recovery panchnama, Patek Philippe 3970",
+      "type": "DOCUMENT",
+      "description": "Recovery of the wristwatch said to have been stolen by the accused in June 2025, from a tin box in the residence of Gopi Shetty on 14 September 2025, in the presence of two panchas.",
+      "source": "Case diary, Halasuru Gate Police Station.",
+      "proponent": "defense",
+      "status": "MARKED",
+      "relatedFacts": [
+        "F05",
+        "F17"
+      ]
+    },
+    {
+      "id": "EXHIBIT_G",
+      "title": "Ledger extract, Chandra Finance",
+      "type": "DOCUMENT",
+      "description": "Extract showing a principal of Rs 4,10,000 outstanding against Gopi Shetty, in arrears since March 2025, with a note of a demand made in the first week of September.",
+      "source": "Produced by the lender under summons.",
+      "proponent": "defense",
+      "status": "MARKED",
+      "relatedFacts": [
+        "F09"
+      ]
+    }
+  ],
+  "prosecutionTheory": {
+    "summary": "A dismissed apprentice went back to the shop that had ruined his name, and the camera watched him go in. Six minutes later the door was open, the lights were off and Julian Thorne was dead at his bench with the accused's cufflink beside his hand. The man who entered is the man who left.",
+    "inferenceChain": [
+      "The accused had a motive of a particular and durable kind: not money but disgrace, publicly inflicted by his own master.",
+      "The recording places him at the door at 23:51 and no one else is seen to enter.",
+      "His cufflink was recovered within half a metre of the body, which places him at the bench and not merely at the door.",
+      "The death falls inside the window the recording cannot account for, and he was inside the shop when that window opened.",
+      "The watch was already gone, taken in June, and its later appearance elsewhere proves only that stolen property moves."
+    ],
+    "reliesOn": [
+      "EXHIBIT_A",
+      "EXHIBIT_B",
+      "EXHIBIT_D"
+    ],
+    "keyWitnesses": [
+      "W_KADAM",
+      "W_GOPI",
+      "W_THORNE"
+    ],
+    "weakestPoint": "The figure that leaves at 23:58:56 is of heavier build than the man who entered and walks west, away from the accused's room; and the only fingerprints on the weapon belong to another man entirely."
+  },
+  "defenseTheory": {
+    "summary": "The prosecution has a door, a cufflink and a hole. Kabir Rane went in to return a gift and ask to be cleared, and walked out four minutes later into six minutes no camera was watching. In those same six minutes a man who owed four lakhs to a private lender came in through a lane no camera covers, took a watch he later hid in a tin box, and left a cufflink he had stolen in August where the police would be sure to find it.",
+    "inferenceChain": [
+      "The blackout is not a coincidence in the prosecution's timeline; it is the whole of the prosecution's timeline.",
+      "The rear service lane is uncovered, so entry by another person is not merely possible but unrecorded by design.",
+      "The only prints on the clock are Gopi Shetty's, including one on the grip, and none of the accused's are on it at all.",
+      "The watch the accused was said to have stolen was found in Gopi Shetty's house, which destroys the motive and names the man who had it.",
+      "Gopi Shetty described a second, heavier man during the blackout and then removed him from his own statement two days later.",
+      "The figure leaving at 23:58:56 is heavier than the man who entered and walks west, towards the tea stall, and not east towards Shivajinagar."
+    ],
+    "reliesOn": [
+      "EXHIBIT_C",
+      "EXHIBIT_D",
+      "EXHIBIT_E",
+      "EXHIBIT_F",
+      "EXHIBIT_G"
+    ],
+    "keyWitnesses": [
+      "W_REDDY",
+      "W_KADAM",
+      "W_GOPI"
+    ],
+    "weakestPoint": "The accused cannot explain how his cufflink came to be lying beside the body, and he never reported it missing."
+  },
+  "hiddenTruth": {
+    "_note": "ENGINE ONLY. This object exists so the simulation can score testimony for consistency and decide what a witness would really say. It must never be placed in a prompt, sent over the wire, written to a snapshot, or shown to any agent, including the judge. CaseManager strips it at construction and never returns it from any scoped view.",
+    "whatActuallyHappened": "Gopi Shetty killed Julian Thorne. He had been taking small movement parts from the workshop for over a year and selling them, and in June he took the Patek Philippe 3970 from the safe using the key kept at the bench. Thorne blamed the apprentice and dismissed him. In the first week of September, with Chandra Finance pressing him, Gopi tried to sell the watch and word came back to Thorne, who told Gopi on 11 September that he would go to the police in the morning. That night Gopi waited for Kabir Rane to leave, came in through the rear service lane at about 23:54, and struck Thorne once with the brass carriage clock while he was at the bench. He took the cufflink he had lifted from Rane's room in August and dropped it by the hand, went out through the front door at 23:58:56 and walked west to his stall. He did not know the recording had failed; the six minutes are luck, not planning, and they are the only reason he was not on camera coming in.",
+    "trueCulprit": "W_GOPI",
+    "accusedIsGuilty": false,
+    "whatTheAccusedDid": "Entered at 23:51, spoke to no one because Thorne would not come out from the bench, left the cufflink he had brought on the counter, and walked out east at about 23:55, inside the blackout.",
+    "keyDeceptions": [
+      "Gopi's account of seeing a taller man in a coat is a description of himself, offered before he understood he was not on camera.",
+      "The amendment of 14 September was made the same day the watch was recovered from his house.",
+      "Gopi's certainty about the accused's anger is invention; he did not see the accused's face that night at all."
+    ],
+    "whatWouldConvict": "Nothing the prosecution holds. The cufflink is the only thing tying the accused to the bench and it was planted.",
+    "whatWouldAcquit": "The fingerprints on the grip of the clock, the recovery of the watch from Gopi Shetty's residence, the amended statement, and the fact that the figure leaving is of the wrong build and walks the wrong way."
+  }
+}

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Courtroom Simulation Engine</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="status-bar" aria-label="Courtroom state">
+        <div>
+          <span>Phase</span>
+          <strong data-state="phase">connecting</strong>
+        </div>
+        <div>
+          <span>Speaker</span>
+          <strong data-state="speaker">none</strong>
+        </div>
+        <div>
+          <span>Camera</span>
+          <strong data-state="camera">idle</strong>
+        </div>
+        <div>
+          <span>Animation</span>
+          <strong data-state="animation">idle</strong>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="panel controls">
+          <h1>AI Courtroom Engine</h1>
+          <p>Event-driven courtroom simulation for multi-agent legal training.</p>
+
+          <div class="button-grid">
+            <button id="startCase">Start Case</button>
+            <button id="quickOpening">Prosecutor Opening</button>
+            <button id="quickWitness">Witness Answer</button>
+            <button id="quickObjection">Raise Objection</button>
+            <button id="reset" class="secondary">Reset</button>
+          </div>
+
+          <form id="customEvent">
+            <label for="eventType">
+              Event
+              <select id="eventType">
+                <option>QUESTION_WITNESS</option>
+                <option>SUBMIT_EVIDENCE</option>
+                <option>OPENING_STATEMENT</option>
+                <option>ANSWER_WITNESS</option>
+                <option>FINAL_ARGUMENT</option>
+                <option>VERDICT</option>
+                <option>ACCEPT_EVIDENCE</option>
+              </select>
+            </label>
+
+            <label for="actor">
+              Actor
+              <select id="actor">
+                <option value="defense">Defense Lawyer</option>
+                <option value="prosecutor">Prosecutor</option>
+                <option value="judge">Judge</option>
+                <option value="witness">Witness</option>
+                <option value="clerk">Court Clerk</option>
+              </select>
+            </label>
+
+            <label for="question">
+              Question or prompt
+              <textarea id="question" rows="3" placeholder="Ask the witness a courtroom question"></textarea>
+            </label>
+
+            <label for="evidenceTitle">
+              Evidence title
+              <input id="evidenceTitle" placeholder="UPI transaction screenshot" />
+            </label>
+
+            <label for="evidenceDescription">
+              Evidence description
+              <textarea id="evidenceDescription" rows="3" placeholder="Describe the submitted evidence"></textarea>
+            </label>
+
+            <button type="submit">Dispatch Event</button>
+          </form>
+        </aside>
+
+        <section class="panel transcript-panel">
+          <div class="panel-header">
+            <h2>Live Transcript</h2>
+            <span data-state="evidence">0 accepted / 0 pending / 0 rejected</span>
+          </div>
+          <div id="transcript" class="transcript"></div>
+        </section>
+
+        <aside class="panel timeline-panel">
+          <h2>Timeline</h2>
+          <ol id="timeline"></ol>
+          <h2>Short-Term Memory</h2>
+          <p data-state="memory" class="memory">empty</p>
+        </aside>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "courtroom-simulation-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "test": "node --test",
+    "verify": "node tools/verify-frontend-bridge.mjs",
+    "smoke": "node tools/socket-smoke.mjs",
+    "play": "node tools/socket-human.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

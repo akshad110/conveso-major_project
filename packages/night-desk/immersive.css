@@ -1,0 +1,275 @@
+/* ===========================================================================
+   NIGHT DESK — IMMERSIVE
+   ---------------------------------------------------------------------------
+   Split out of night-desk.css so an app that is only pages can skip it, and —
+   more usefully — so an app that already has the tokens can take these classes
+   *without* a second copy of the palette. Converso does exactly that: its own
+   globals.css owns the tokens, and it imports this file alone to get the boot
+   sequence, the seat caption and the launch notice.
+
+   Everything here assumes the tokens are already defined. Loaded on its own it
+   inherits whatever --panel and --ink the host page provides, which is the
+   intent: one palette, one place.
+   =========================================================================== */
+
+
+/* The room itself. --ground-deep exists for exactly this: the chrome should
+   disappear and the render should be the darkest thing you are looking at. */
+.nd-stage {
+  position: fixed;
+  inset: 0;
+  background: var(--ground-deep);
+  overflow: hidden;
+}
+
+.nd-stage > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Anything floating over the scene. Children opt back in individually, so the
+   scene stays draggable between them. */
+.nd-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.nd-layer > * {
+  pointer-events: auto;
+}
+
+/* The one strip that says which product you are in and how to leave it. It is
+   the only chrome shared by all three apps, and it is deliberately thin. */
+.nd-hud {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(7, 6, 16, 0.92), rgba(7, 6, 16, 0));
+}
+
+.nd-hud-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* A card that sits on the scene rather than on the page. */
+.nd-float {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-card);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+
+.nd-float::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--edge-lit) 15%,
+    var(--edge-lit) 85%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+   BOOT — the staged loading screen
+   ---------------------------------------------------------------------------
+   A heavy scene takes real time to arrive, and the honest thing is to say what
+   is arriving rather than to spin. Five named steps, each one a machine fact,
+   so the student can see the room is being built rather than that something is
+   stuck.
+   --------------------------------------------------------------------------- */
+
+.nd-boot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--ground-deep);
+  padding: 24px;
+  z-index: 40;
+}
+
+.nd-boot-inner {
+  width: min(420px, 100%);
+}
+
+.nd-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 22px;
+}
+
+.nd-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  transition: color var(--t-quick) var(--ease);
+}
+
+/* The dot is the whole status indicator. No spinners, no percentages that lie. */
+.nd-step::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--edge);
+  flex: none;
+  transition: background var(--t-quick) var(--ease);
+}
+
+.nd-step[data-state="active"] {
+  color: var(--ink);
+}
+
+.nd-step[data-state="active"]::before {
+  background: var(--flame);
+  animation: nd-pulse 1.1s var(--ease) infinite;
+}
+
+.nd-step[data-state="done"] {
+  color: var(--ink-dim);
+}
+
+.nd-step[data-state="done"]::before {
+  background: var(--good);
+}
+
+.nd-step[data-state="failed"] {
+  color: var(--bad);
+}
+
+.nd-step[data-state="failed"]::before {
+  background: var(--bad);
+}
+
+.nd-step-note {
+  margin-left: auto;
+  color: var(--ink-faint);
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+@keyframes nd-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+/* A real measurement, when there is one. Bytes loaded is a fact; a fake
+   percentage that jumps to 90 and waits is not. */
+.nd-bar {
+  height: 2px;
+  width: 100%;
+  background: var(--edge);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.nd-bar-fill {
+  height: 100%;
+  background: var(--flame);
+  transition: width var(--t-calm) var(--ease);
+}
+
+/* ---------------------------------------------------------------------------
+   SPEECH — the line currently being said, over a scene
+   --------------------------------------------------------------------------- */
+
+.nd-caption {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  max-width: 62ch;
+  padding: 13px 16px;
+  background: rgba(19, 17, 24, 0.94);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Who is speaking is a machine fact — a seat, not a person — so it is mono and
+   it carries that seat's hue. The words themselves are sans, because they are
+   the one thing in the room an actual human said. */
+.nd-caption-who {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--seat, var(--ink-dim));
+}
+
+/* ---------------------------------------------------------------------------
+   SEATS — one hue per role, set once so 3D and DOM cannot disagree
+   ---------------------------------------------------------------------------
+   Same seven accents as the LMS, read here as courtroom seats rather than as
+   school subjects. tokens.mjs carries the identical mapping for the renderer.
+   --------------------------------------------------------------------------- */
+
+[data-seat="judge"]      { --seat: var(--a-law-lit); }
+[data-seat="clerk"]      { --seat: var(--a-history-lit); }
+[data-seat="prosecutor"] { --seat: var(--a-language-lit); }
+[data-seat="defense"]    { --seat: var(--a-coding-lit); }
+[data-seat="witness"]    { --seat: var(--a-science-lit); }
+[data-seat="defendant"]  { --seat: var(--a-economics-lit); }
+[data-seat="police"]     { --seat: var(--a-maths-lit); }
+
+/* ---------------------------------------------------------------------------
+   TROUBLE — what a student sees when something is down
+   ---------------------------------------------------------------------------
+   Says what happened and what fixes it, in the interface's voice. It does not
+   apologise, it is never vague, and it never repeats a provider's error text —
+   that goes to the server log, and one of these comes out instead.
+   --------------------------------------------------------------------------- */
+
+.nd-notice {
+  max-width: 46ch;
+  padding: 20px 22px;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-card);
+  text-align: left;
+}
+
+.nd-notice-bad { border-color: color-mix(in srgb, var(--bad) 45%, var(--edge)); }
+
+.nd-notice h3 { margin-bottom: 8px; }
+
+.nd-notice p {
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.nd-notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nd-step[data-state="active"]::before { animation: none; }
+}

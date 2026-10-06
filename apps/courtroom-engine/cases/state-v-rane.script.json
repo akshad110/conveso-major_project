@@ -1,0 +1,655 @@
+{
+  "_note": "The performance layer for state-v-rane. Read by src/llm/scriptedProvider.js, which serves these as a language model would and lets the engine validate every one of them. Beats are matched on role + phase + witness and consumed in the order written, so a question and its answer stay paired. Anything not written here — every objection, every ruling on one — falls through to the offline heuristic, because those depend on what was actually just said.",
+  "beats": [
+    {
+      "id": "pre-clerk",
+      "role": "clerk",
+      "phase": "PRE_SESSION",
+      "action": "SPEAK",
+      "target": "court",
+      "speech": "Sessions Case 218 of 2025. State versus Kabir Rane. All rise.",
+      "reason": "Calling the matter on."
+    },
+    {
+      "id": "open-gavel",
+      "role": "judge",
+      "phase": "COURT_OPENING",
+      "action": "GAVEL",
+      "target": "court",
+      "speech": "Be seated.",
+      "reason": "Opening the sitting."
+    },
+    {
+      "id": "open-judge",
+      "role": "judge",
+      "phase": "COURT_OPENING",
+      "action": "SPEAK",
+      "target": "court",
+      "speech": "This court is in session. Before we begin I will say one thing to both sides. There are six minutes in this case that nobody recorded. I have read the papers and I can see that each of you intends to fill those six minutes with a story. I will take evidence about them. I will not take speculation dressed as evidence. Proceed.",
+      "reason": "Setting the terms of the trial and naming its central problem."
+    },
+    {
+      "id": "charge-clerk",
+      "role": "clerk",
+      "phase": "CHARGES",
+      "action": "SPEAK",
+      "target": "defendant",
+      "speech": "Kabir Rane, you stand charged under section 103(1) of the Bharatiya Nyaya Sanhita with the murder of Julian Thorne on the night of the eleventh of September, 2025, and under section 305(a) with theft of a wristwatch from the same premises. How do you plead?",
+      "reason": "Reading the charges and taking the plea."
+    },
+    {
+      "id": "charge-plea",
+      "role": "defendant",
+      "phase": "CHARGES",
+      "action": "ANSWER",
+      "target": "judge",
+      "speech": "Not guilty, Your Honour. To both.",
+      "reason": "The plea."
+    },
+    {
+      "id": "pros-open-1",
+      "role": "prosecutor",
+      "phase": "PROSECUTION_OPENING",
+      "action": "SPEAK",
+      "target": "judge",
+      "speech": "Your Honour, this is a case about a man who was thrown out of the only place he ever belonged, and who went back. Kabir Rane was Julian Thorne's apprentice for four years. In June, Mr Thorne accused him of stealing a watch and put him out on the street without a reference. In this trade that is not a dismissal, it is an execution. On the night of the eleventh of September the accused walked the length of Nightingale Road, and at eleven fifty-one the camera outside the shop recorded him going in through that door.",
+      "reason": "Opening on motive and the recorded entry."
+    },
+    {
+      "id": "pros-open-2",
+      "role": "prosecutor",
+      "phase": "PROSECUTION_OPENING",
+      "action": "PRESENT_EVIDENCE",
+      "evidence": "EXHIBIT_D",
+      "target": "judge",
+      "speech": "I ask the court to look at the recording itself. Your Honour will see a man come from the east and go in at eleven fifty-one. Your Honour will then see the picture stop. When it returns, six minutes later, that door is standing open, the lights are off, and Julian Thorne is already dead at his bench with the accused's own cufflink lying beside his hand. The man who went in is the man who came out. The prosecution will prove it.",
+      "reason": "Putting the footage before the court and committing to the identification."
+    },
+    {
+      "id": "def-open-1",
+      "role": "defense",
+      "phase": "DEFENSE_OPENING",
+      "action": "SPEAK",
+      "target": "judge",
+      "speech": "My learned friend has a door, a cufflink, and a hole. Your Honour will notice that the whole of his case happens inside the hole. He cannot tell you who struck Julian Thorne, because his own camera was not running. He cannot tell you who came out of that shop, because the figure that leaves at eleven fifty-eight is heavier than the boy who went in and walks west, and my client lives east.",
+      "reason": "Attacking the identification and the blackout."
+    },
+    {
+      "id": "def-open-2",
+      "role": "defense",
+      "phase": "DEFENSE_OPENING",
+      "action": "SPEAK",
+      "target": "judge",
+      "speech": "Kabir Rane went to that shop to give back a cufflink and to ask an old man to clear his name. Mr Thorne would not come out from the bench. My client left inside five minutes, into six minutes nobody was watching. In those same six minutes another man came in through a service lane that has no camera on it at all — a man who owed four lakh rupees he could not pay, whose fingerprints are on the grip of the murder weapon, and in whose house the police found the very watch my client was accused of stealing. The defence does not ask the court to guess. It asks the court to look at who had that watch.",
+      "reason": "Putting the alternative in the frame and naming what the defence will prove."
+    },
+    {
+      "id": "kadam-d1",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "QUESTION_WITNESS",
+      "target": "W_KADAM",
+      "speech": "Sub-Inspector, you reached the premises that night. Describe what you found.",
+      "reason": "Establishing the scene through the investigating officer."
+    },
+    {
+      "id": "kadam-d1a",
+      "role": "police",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "I reached at one forty hours, sir. The deceased was at the workbench in the rear, seated, fallen forward. One injury to the left side of the head. A brass carriage clock was on the floor to his right. The front door was open. The interior lights were switched off.",
+      "reason": "Giving the scene as recorded in the case diary."
+    },
+    {
+      "id": "kadam-d2",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "QUESTION_WITNESS",
+      "target": "W_KADAM",
+      "speech": "Was anything recovered from the floor near the body?",
+      "reason": "Bringing in the cufflink."
+    },
+    {
+      "id": "kadam-d2a",
+      "role": "police",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "One gold cufflink, sir, about half a metre from the right hand. It carries the shop's mark. On arrest the accused produced its pair from his room.",
+      "reason": "The single item that places the accused at the bench."
+    },
+    {
+      "id": "kadam-d3",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "QUESTION_WITNESS",
+      "target": "W_KADAM",
+      "speech": "On what material did you arrest Kabir Rane?",
+      "reason": "Establishing the basis of the arrest."
+    },
+    {
+      "id": "kadam-d3a",
+      "role": "police",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "Three things, sir. The recording showing him entering at eleven fifty-one. The cufflink at the body. And the dismissal in June, which gave a reason.",
+      "reason": "The prosecution case, stated plainly by the officer who built it."
+    },
+    {
+      "id": "kadam-x1",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "QUESTION_WITNESS",
+      "target": "W_KADAM",
+      "speech": "Sub-Inspector, is there a rear service lane to those premises?",
+      "reason": "Opening the uncovered entrance."
+    },
+    {
+      "id": "kadam-x1a",
+      "role": "police",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "There is, sir.",
+      "reason": "Conceding what the file plainly shows."
+    },
+    {
+      "id": "kadam-x2",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "QUESTION_WITNESS",
+      "target": "W_KADAM",
+      "speech": "And no camera covers it. So a person could enter and leave those premises that night without appearing on any recording at all.",
+      "reason": "Establishing that the footage cannot exclude anyone."
+    },
+    {
+      "id": "kadam-x2a",
+      "role": "police",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "As per the record, no camera covers the rear lane. That is correct, sir.",
+      "reason": "A truthful concession that undoes the closed timeline."
+    },
+    {
+      "id": "kadam-x3",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "QUESTION_WITNESS",
+      "target": "W_KADAM",
+      "speech": "Whose fingerprints were found on the clock that killed him?",
+      "reason": "The question the prosecution never asked."
+    },
+    {
+      "id": "kadam-x3a",
+      "role": "police",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_KADAM",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "Three latent prints were developed, sir. All three were matched to Gopi Shetty. None of the accused were found on the striking surface or the base.",
+      "reason": "The officer will not deny what the laboratory found."
+    },
+    {
+      "id": "gopi-d1",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "QUESTION_WITNESS",
+      "target": "W_GOPI",
+      "speech": "Mr Shetty, you keep the tea stall on that road. Did you see the accused that night?",
+      "reason": "The eyewitness the prosecution is relying on."
+    },
+    {
+      "id": "gopi-d1a",
+      "role": "witness",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "See him? I saw him, sir, of course I saw him. Kabir. Four years that boy came to me for tea at four o'clock. He went in near about eleven fifty. I remember because the rain started right then, and I was pulling in my benches.",
+      "reason": "Volunteering more detail than he was asked for."
+    },
+    {
+      "id": "gopi-d2",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "QUESTION_WITNESS",
+      "target": "W_GOPI",
+      "speech": "How did he appear to you?",
+      "reason": "Drawing out demeanour."
+    },
+    {
+      "id": "gopi-d2a",
+      "role": "witness",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "Angry, sir. Very angry. Walking fast, head down, like this. I am a simple man but I know a face like that. Why would I lie about a boy I gave tea to?",
+      "reason": "The emphatic detail on which the prosecution's picture of motive rests."
+    },
+    {
+      "id": "gopi-d3",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "QUESTION_WITNESS",
+      "target": "W_GOPI",
+      "speech": "Did you see anybody else go into those premises that night?",
+      "reason": "Closing off the alternative before the defence can open it."
+    },
+    {
+      "id": "gopi-d3a",
+      "role": "witness",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "Nobody, sir. Only Kabir. I was there at my stall the whole night, the whole night, and only that boy went in at that door.",
+      "reason": "The lie he must now hold, and the one that will break."
+    },
+    {
+      "id": "gopi-x1",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "PRESENT_EVIDENCE",
+      "evidence": "EXHIBIT_E",
+      "target": "W_GOPI",
+      "speech": "Mr Shetty, this is the statement you gave the police on the twelfth of September. You told them you saw a second man near that door during the darkness. A heavier man, in a coat. Read it.",
+      "reason": "Confronting the witness with his own first account."
+    },
+    {
+      "id": "gopi-x1a",
+      "role": "witness",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "A second man, a second man... I may have said something like that, sir. It was dark. It was raining. A man can think he sees a shape and it is only the awning moving.",
+      "reason": "Retreating from the account without disowning it."
+    },
+    {
+      "id": "gopi-x2",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "QUESTION_WITNESS",
+      "target": "W_GOPI",
+      "speech": "Two days later you gave a second statement and the heavier man was gone from it. What happened on the fourteenth of September, Mr Shetty?",
+      "reason": "Tying the amendment to the day the watch was recovered."
+    },
+    {
+      "id": "gopi-x2a",
+      "role": "witness",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "They asked me again, that is all. I told them properly the second time. What happened on the fourteenth — nothing happened. Why are you asking me about the fourteenth?",
+      "reason": "Answering a question with a question, which is the tell."
+    },
+    {
+      "id": "gopi-x3",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "PRESENT_EVIDENCE",
+      "evidence": "EXHIBIT_F",
+      "target": "W_GOPI",
+      "speech": "I will tell you what happened on the fourteenth. On the fourteenth the police opened a tin box in your house and took out a Patek Philippe wristwatch — the watch Julian Thorne told the whole road my client had stolen. How did that watch come to be in your house?",
+      "reason": "The recovery that destroys the prosecution's motive and names the man who had it."
+    },
+    {
+      "id": "gopi-x3a",
+      "role": "witness",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_GOPI",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "A man gave it to me to sell! I did not ask from where. I am a tea seller, sir, people give me things to sell, I take my two hundred rupees. That is not a crime. That is not — you cannot put a murder on me for a watch.",
+      "reason": "The improvisation that concedes possession while denying the inference."
+    },
+    {
+      "id": "thorne-d1",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_THORNE",
+      "action": "QUESTION_WITNESS",
+      "target": "W_THORNE",
+      "speech": "Ms Thorne, what was your uncle's view of the accused after June?",
+      "reason": "Establishing the breach through the family."
+    },
+    {
+      "id": "thorne-d1a",
+      "role": "witness",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_THORNE",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "He loved that boy's hands. He used to say Kabir could hear a movement running wrong from across the room. And then in June he told me he had been wrong about him, that the boy was dishonest, and that he would not have him in the shop again.",
+      "reason": "Real grief, reporting a real conversation."
+    },
+    {
+      "id": "thorne-d2",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_THORNE",
+      "action": "QUESTION_WITNESS",
+      "target": "W_THORNE",
+      "speech": "Did that accusation become known on the road?",
+      "reason": "Public humiliation as the engine of the motive."
+    },
+    {
+      "id": "thorne-d2a",
+      "role": "witness",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_THORNE",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "Everybody knew within a week. It is a small trade. My uncle did not go to the police, but he did not keep quiet either, and for a young man starting out that is worse.",
+      "reason": "Giving the dismissal its weight."
+    },
+    {
+      "id": "thorne-x1",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_THORNE",
+      "action": "QUESTION_WITNESS",
+      "target": "W_THORNE",
+      "speech": "Ms Thorne, did your uncle ever say that he had seen Kabir Rane take that watch?",
+      "reason": "Separating what was concluded from what was seen."
+    },
+    {
+      "id": "thorne-x1a",
+      "role": "witness",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_THORNE",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "No. He said it was gone, and that Kabir had a key to the bench. I am being exact, because you have asked me to be. He never said he saw it.",
+      "reason": "An honest witness declining to improve her own evidence."
+    },
+    {
+      "id": "thorne-x2",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_THORNE",
+      "action": "QUESTION_WITNESS",
+      "target": "W_THORNE",
+      "speech": "Who else had reason to be at that bench, day after day, for eleven years?",
+      "reason": "Opening the door to the tea deliveries."
+    },
+    {
+      "id": "thorne-x2a",
+      "role": "witness",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_THORNE",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "The tea man came to the bench twice a day. My uncle had also been saying, for a long time before June, that small parts were going missing from the inventory. I did not connect the two. I am connecting them now, sitting here.",
+      "reason": "The moment the family's own account turns."
+    },
+    {
+      "id": "reddy-d1",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "PRESENT_EVIDENCE",
+      "evidence": "EXHIBIT_D",
+      "target": "W_REDDY",
+      "speech": "Sub-Inspector Reddy, this is the recording from Camera Zero Two. Take the court through it.",
+      "reason": "Putting the footage on the record through the technical witness."
+    },
+    {
+      "id": "reddy-d1a",
+      "role": "witness",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "The camera covers the front elevation only. At twenty-three fifty-one a man approaches from the east and enters. At twenty-three fifty-two the recording stops. It resumes at twenty-three fifty-eight. At twenty-three fifty-eight and fifty-six seconds a figure leaves the doorway and moves out of frame.",
+      "reason": "The footage described exactly and without inference."
+    },
+    {
+      "id": "reddy-d2",
+      "role": "prosecutor",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "QUESTION_WITNESS",
+      "target": "W_REDDY",
+      "speech": "And between those two events, nobody else enters or leaves by that door.",
+      "reason": "Sealing the timeline for the prosecution."
+    },
+    {
+      "id": "reddy-d2a",
+      "role": "witness",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "By that door, and during the periods that were recorded, no. For the six minutes in between there is no recording at all, so I cannot say what happened at that door or anywhere else.",
+      "reason": "Refusing to let the gap be read as an absence of events."
+    },
+    {
+      "id": "reddy-x1",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "QUESTION_WITNESS",
+      "target": "W_REDDY",
+      "speech": "Sub-Inspector, can you identify the man who goes in at eleven fifty-one?",
+      "reason": "Testing the identification the whole case rests on."
+    },
+    {
+      "id": "reddy-x1a",
+      "role": "witness",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "No. There is no face in the frame at any point. The recording does not show that.",
+      "reason": "The flat technical answer that removes the identification."
+    },
+    {
+      "id": "reddy-x2",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "QUESTION_WITNESS",
+      "target": "W_REDDY",
+      "speech": "Compare the two. The man who goes in at eleven fifty-one, and the figure that comes out at eleven fifty-eight. Same build?",
+      "reason": "The comparison nobody in the investigation made."
+    },
+    {
+      "id": "reddy-x2a",
+      "role": "witness",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "No, sir. The figure leaving is of heavier build than the man entering. I recorded that in my note. I am not able to say who either of them is.",
+      "reason": "Two different men on the same tape, stated by the State's own expert."
+    },
+    {
+      "id": "reddy-x3",
+      "role": "defense",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "QUESTION_WITNESS",
+      "target": "W_REDDY",
+      "speech": "And which way does that heavier figure walk when it leaves?",
+      "reason": "The direction that separates the two men."
+    },
+    {
+      "id": "reddy-x3a",
+      "role": "witness",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "W_REDDY",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "West, sir. Out of frame to the west.",
+      "reason": "West is the tea stall. East is the accused's room."
+    },
+    {
+      "id": "rane-d1",
+      "role": "defense",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "QUESTION_WITNESS",
+      "target": "D_RANE",
+      "speech": "Mr Rane, why did you go to that shop that night?",
+      "reason": "Letting the accused give his account."
+    },
+    {
+      "id": "rane-d1a",
+      "role": "defendant",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "To give back the cufflink, and to ask him to say it in front of people that I had not taken the watch. Four years I sat at that bench. He taught me to hear a balance wheel. I did not want money from him. I wanted him to say my name properly again.",
+      "reason": "The true reason, which sounds thin and is."
+    },
+    {
+      "id": "rane-d2",
+      "role": "defense",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "QUESTION_WITNESS",
+      "target": "D_RANE",
+      "speech": "What happened when you went in?",
+      "reason": "The four minutes inside."
+    },
+    {
+      "id": "rane-d2a",
+      "role": "defendant",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "He did not come out from the bench. He heard me and he did not turn around. I stood there and I said his name twice. Then I put the cufflink on the counter and I left. Maybe four minutes. Maybe five. He was alive. He was sitting there working and he was alive when I walked out of that door.",
+      "reason": "The account that cannot be corroborated because the camera was dark."
+    },
+    {
+      "id": "rane-d3",
+      "role": "defense",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "QUESTION_WITNESS",
+      "target": "D_RANE",
+      "speech": "The police found your cufflink beside his hand. Explain that.",
+      "reason": "Meeting the worst fact head-on rather than leaving it to cross."
+    },
+    {
+      "id": "rane-d3a",
+      "role": "defendant",
+      "phase": "DIRECT_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "ANSWER",
+      "target": "defense",
+      "speech": "I cannot. One of them went missing from my room at the end of August. I did not report it. Who reports one cufflink? I know how that sounds. I have had three months to invent something better and I have not, because there is nothing to invent. I do not know how it got there.",
+      "reason": "Declining to fill the gap, at cost."
+    },
+    {
+      "id": "rane-x1",
+      "role": "prosecutor",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "QUESTION_WITNESS",
+      "target": "D_RANE",
+      "speech": "You went there at midnight, Mr Rane. Not at noon. Midnight.",
+      "reason": "Making the hour do the work the evidence cannot."
+    },
+    {
+      "id": "rane-x1a",
+      "role": "defendant",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "He worked until one, sir. Every night for four years. If I had gone at noon there would have been customers in the shop and he would have had to answer me in front of them. I did not want to shame him. I wanted him to be fair to me.",
+      "reason": "The answer that makes the suspicious hour ordinary."
+    },
+    {
+      "id": "rane-x2",
+      "role": "prosecutor",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "QUESTION_WITNESS",
+      "target": "D_RANE",
+      "speech": "He refused to even look at you. You had lost your trade and your name because of that man, and he would not turn his head. And you say you simply walked away.",
+      "reason": "Putting the prosecution case directly to the accused."
+    },
+    {
+      "id": "rane-x2a",
+      "role": "defendant",
+      "phase": "CROSS_EXAMINATION",
+      "witness": "D_RANE",
+      "action": "ANSWER",
+      "target": "prosecutor",
+      "speech": "Yes. That is what I did. You are asking me to agree that I was angry. I was angry, sir. I have been angry since June. Being angry is not the same as picking up a clock.",
+      "reason": "Conceding the emotion and refusing the inference."
+    },
+    {
+      "id": "close-pros",
+      "role": "prosecutor",
+      "phase": "CLOSING_ARGUMENTS",
+      "action": "SPEAK",
+      "target": "judge",
+      "speech": "Your Honour, the defence has spent this trial pointing at a tea seller. Let them. Gopi Shetty is a liar and possibly a thief, and none of that puts the clock in his hand. What the court knows is this. Kabir Rane had the motive. Kabir Rane went through that door. Kabir Rane's cufflink was lying beside the dead man's hand, and he has told this court, on oath, that he cannot explain it. The six minutes are a fault in a camera, not a defence. The prosecution asks for a conviction on both counts.",
+      "reason": "Closing on the one fact the defence never answered."
+    },
+    {
+      "id": "close-def",
+      "role": "defense",
+      "phase": "CLOSING_ARGUMENTS",
+      "action": "SPEAK",
+      "target": "judge",
+      "speech": "My learned friend calls six minutes a fault in a camera. It is the only six minutes that matter, and he has no evidence about any of it. Consider what the State's own witnesses have given this court. Its technical officer says the two figures on that tape are different builds and walk opposite ways. Its laboratory says the only fingerprints on the grip of that clock belong to Gopi Shetty. Its own investigating officer says a man could enter by the rear lane and never be recorded. And the watch — the watch that is supposed to be why my client did this — was pulled out of a tin box in Gopi Shetty's house. The prosecution has proved that Kabir Rane stood in a doorway. It has not come close to proving that he struck a blow. Not guilty, Your Honour, on both counts.",
+      "reason": "Closing on the State's own evidence rather than on sympathy."
+    },
+    {
+      "id": "judgment-1",
+      "role": "judge",
+      "phase": "JUDGMENT",
+      "action": "SPEAK",
+      "target": "court",
+      "speech": "I said at the opening of this trial that there were six minutes nobody recorded, and that I would not take speculation in place of evidence. I hold both sides to that. The prosecution has established that the accused was at the premises and that his cufflink was recovered near the body. It has not established who struck Julian Thorne. Its identification of the figure leaving the premises rests on an assumption its own technical witness declined to support, the fingerprints on the weapon are another man's, and the property said to supply the motive was recovered from that same man's house. Taken together these do not merely raise a doubt; they point elsewhere, and the court is not required to ignore where they point. The charge under section 103(1) is not proved. The charge under section 305(a) is not proved. Kabir Rane is acquitted on both counts and shall be set at liberty forthwith.",
+      "reason": "Judgment on the evidence, tracking the reasoning the trial actually produced."
+    },
+    {
+      "id": "judgment-2",
+      "role": "judge",
+      "phase": "JUDGMENT",
+      "action": "SPEAK",
+      "target": "court",
+      "speech": "One further direction. The material concerning Gopi Shetty — the fingerprint report, the recovery of the wristwatch, and the amendment of his statement two days after that recovery — will be placed before the Commissioner of Police for investigation in accordance with law. This court has acquitted a man tonight. It has not closed a file.",
+      "reason": "Sending the real matter where it belongs without trying it here."
+    },
+    {
+      "id": "judgment-gavel",
+      "role": "judge",
+      "phase": "JUDGMENT",
+      "action": "GAVEL",
+      "target": "court",
+      "speech": "The court rises.",
+      "reason": "Closing the sitting."
+    }
+  ]
+}

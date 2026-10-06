@@ -1,0 +1,88 @@
+# One blueprint, four services. Render → New → Blueprint → this repo.
+# Free web services sleep when idle. The engine forgets a hearing if it sleeps,
+# so keep that service awake or move it to the always-free Oracle VM in the
+# deploy notes. Fill every sync:false variable in the dashboard before the
+# first deploy. Do not put secrets in this file.
+
+services:
+  - type: web
+    name: converso-lms
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install && npm run build --workspace apps/lms
+    startCommand: npm run start --workspace apps/lms
+    envVars:
+      - key: NODE_VERSION
+        value: 20.17.0
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: NEXT_PUBLIC_CLERK_SIGN_IN_URL
+        value: /sign-in
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: NEXT_PUBLIC_VAPI_WEB_TOKEN
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: LAUNCH_TOKEN_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_COURTROOM_URL
+        sync: false
+      - key: NEXT_PUBLIC_LANGUAGE_SCENE_URL
+        sync: false
+
+  - type: web
+    name: converso-classroom
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install && npm run build --workspace apps/classroom
+    startCommand: npm run start --workspace apps/classroom
+    envVars:
+      - key: NODE_VERSION
+        value: 20.17.0
+      - key: NEXT_PUBLIC_CONVERSO_URL
+        sync: false
+
+  - type: web
+    name: converso-courtroom
+    runtime: static
+    buildCommand: npm install && npm run build --workspace apps/courtroom
+    staticPublishPath: apps/courtroom/dist
+    envVars:
+      - key: NODE_VERSION
+        value: 20.17.0
+      - key: VITE_CONVERSO_URL
+        sync: false
+      - key: VITE_COURT_WS_URL
+        sync: false
+    headers:
+      - path: /models/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*
+        name: Content-Security-Policy
+        value: frame-ancestors 'self' http://localhost:3000 http://127.0.0.1:3000 https://*.vercel.app https://*.onrender.com
+
+  - type: web
+    name: converso-engine
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: deploy/engine.Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/state
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: COURT_CASE
+        value: state-v-rane
+      - key: COURT_LLM_PROVIDER
+        value: offline

@@ -1,0 +1,15 @@
+{
+  "name": "@converso/night-desk",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The one look. Plain CSS tokens plus the handful of classes every app in the suite shares.",
+  "main": "./tokens.mjs",
+  "exports": {
+    ".": "./tokens.mjs",
+    "./night-desk.css": "./night-desk.css",
+    "./immersive.css": "./immersive.css",
+    "./tokens.mjs": "./tokens.mjs"
+  },
+  "files": ["night-desk.css", "immersive.css", "tokens.mjs", "DESIGN-SYSTEM.md"]
+}

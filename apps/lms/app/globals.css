@@ -1,0 +1,1025 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+/* The full-screen-scene classes, shared with the courtroom and the classroom.
+   Only the immersive half — the tokens it needs are defined below, in this
+   file, which stays the one place the palette is written down. */
+@import "@converso/night-desk/immersive.css";
+
+/* ===========================================================================
+   CONVERSO — "Night Desk"
+   ---------------------------------------------------------------------------
+   One idea holds this interface together: you are at a desk, at night, and a
+   tutor is talking to you while the work appears beside the conversation.
+
+   That gives three rules, and everything below is an application of one of
+   them:
+
+     MATERIAL  Panels are matte, not glass. Each one is lit from above by a
+               single brighter hairline on its top edge (--edge-lit). No
+               backdrop blur, no ambient glow — light has a direction here.
+
+     VOICE     Machine facts are set in mono and uppercase: duration, subject,
+               status, language, exit code, line numbers. Human facts are set
+               in sans: names, topics, what was actually said. You can tell
+               which is which without reading either.
+
+     SHAPE     Soft for reading, sharp for working. Content cards carry a 20px
+               radius; tools — the editor, the console, the toolbar — carry 8px.
+               The corner tells you whether you are browsing or building.
+
+   The palette keeps the seven subject colours the product already had. On a
+   dark ground a pastel behaves differently from a pastel on white, so each
+   subject now has two values: the original pastel, used as a solid tile behind
+   the existing black glyphs so they stay legible, and a luminous sibling used
+   for hairlines and labels. Same hue, two jobs.
+   =========================================================================== */
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* --- ground and material ------------------------------------------------ */
+  --ground: #0b0a0f;
+  --ground-deep: #070610;
+  --panel: #131118;
+  --panel-raised: #1a1822;
+  --panel-sunk: #0e0d13;
+  --edge: #262331;
+  --edge-lit: #3b3650;
+  --edge-hot: #56506f;
+
+  /* --- ink ---------------------------------------------------------------- */
+  --ink: #ece9f2;
+  --ink-dim: #9d98ac;
+  --ink-faint: #6b667a;
+
+  /* --- the one hot colour ------------------------------------------------- */
+  --flame: #ff5a33;
+  --flame-soft: #ff8a66;
+  --flame-sunk: #3a1a12;
+
+  /* --- state -------------------------------------------------------------- */
+  --good: #4fe0a5;
+  --warn: #ffc53d;
+  --bad: #ff5470;
+
+  /* --- subjects: pastel tile / luminous sibling --------------------------- */
+  --s-maths: #ffda6e;
+  --s-maths-lit: #ffc53d;
+  --s-language: #bde7ff;
+  --s-language-lit: #56c9ff;
+  --s-science: #e5d0ff;
+  --s-science-lit: #b18cff;
+  --s-coding: #ffc8e4;
+  --s-coding-lit: #ff6fb5;
+  --s-history: #ffecc8;
+  --s-history-lit: #ffa05c;
+  --s-economics: #c8ffdf;
+  --s-economics-lit: #4fe0a5;
+  --s-law: #d4af37;
+  --s-law-lit: #e9c85a;
+
+  --radius: 0.625rem;
+  --radius-card: 20px;
+  --radius-tool: 8px;
+
+  /* --- shadcn compatibility ----------------------------------------------
+     The ui/ primitives and a few older screens reference these by name. They
+     are repointed at the dark palette rather than removed, so nothing that was
+     not rewritten falls back to a white box. */
+  --background: var(--ground);
+  --foreground: var(--ink);
+  --card: var(--panel);
+  --card-foreground: var(--ink);
+  --popover: #16141d;
+  --popover-foreground: var(--ink);
+  --primary: var(--flame);
+  --primary-foreground: #14100e;
+  --secondary: var(--panel-raised);
+  --secondary-foreground: var(--ink);
+  --muted: var(--panel-raised);
+  --muted-foreground: var(--ink-dim);
+  --accent: var(--panel-raised);
+  --accent-foreground: var(--ink);
+  --destructive: var(--bad);
+  --border: var(--edge);
+  --input: var(--edge);
+  --ring: var(--flame);
+  --cta: #16141d;
+  --cta-gold: var(--warn);
+  --sidebar: var(--panel);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--flame);
+  --sidebar-primary-foreground: #14100e;
+  --sidebar-accent: var(--panel-raised);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--edge);
+  --sidebar-ring: var(--flame);
+  --chart-1: var(--flame);
+  --chart-2: var(--s-language-lit);
+  --chart-3: var(--s-science-lit);
+  --chart-4: var(--s-maths-lit);
+  --chart-5: var(--s-economics-lit);
+
+  /* --- suite bridge --------------------------------------------------------
+     @converso/night-desk is the same palette under different names: it calls
+     the accents --a-law / --a-coding-lit, because in the courtroom they are
+     seats and in the classroom they are languages. The aliases below let a
+     component written against that vocabulary — the boot sequence, the seat
+     caption, the launch notice — render correctly inside Converso without
+     shipping a second copy of the palette. Nothing above changes. */
+  --a-maths: var(--s-maths);         --a-maths-lit: var(--s-maths-lit);
+  --a-language: var(--s-language);   --a-language-lit: var(--s-language-lit);
+  --a-science: var(--s-science);     --a-science-lit: var(--s-science-lit);
+  --a-coding: var(--s-coding);       --a-coding-lit: var(--s-coding-lit);
+  --a-history: var(--s-history);     --a-history-lit: var(--s-history-lit);
+  --a-economics: var(--s-economics); --a-economics-lit: var(--s-economics-lit);
+  --a-law: var(--s-law);             --a-law-lit: var(--s-law-lit);
+
+  --radius-pill: 999px;
+  --t-quick: 140ms;
+  --t-calm: 300ms;
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* The same three faces @theme inline declares below, restated as plain
+     custom properties. @theme puts its variables in a low-precedence layer and
+     inlines them into utilities, so a hand-written rule that says
+     font-family: var(--font-body) cannot rely on them being there. These can:
+     they are unlayered, and they read the next/font variables directly. */
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", sans-serif;
+  --font-body: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-ground-deep: var(--ground-deep);
+  --color-panel: var(--panel);
+  --color-panel-raised: var(--panel-raised);
+  --color-panel-sunk: var(--panel-sunk);
+  --color-edge: var(--edge);
+  --color-edge-lit: var(--edge-lit);
+  --color-edge-hot: var(--edge-hot);
+  --color-ink: var(--ink);
+  --color-dim: var(--ink-dim);
+  --color-faint: var(--ink-faint);
+  --color-flame: var(--flame);
+  --color-flame-soft: var(--flame-soft);
+  --color-flame-sunk: var(--flame-sunk);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-cta: var(--cta);
+  --color-cta-gold: var(--cta-gold);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ===========================================================================
+   Base
+   =========================================================================== */
+
+@layer base {
+  * {
+    border-color: var(--edge);
+  }
+
+  html {
+    background: var(--ground);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    /* A single light source, top-left, sitting behind everything. It is the
+       only gradient in the system and it never moves. */
+    background-image: radial-gradient(
+      110rem 70rem at 8% -18%,
+      rgba(255, 90, 51, 0.07),
+      transparent 60%
+    );
+    background-attachment: fixed;
+  }
+
+  main {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 1240px;
+    padding-inline: 32px;
+    padding-top: 40px;
+    padding-bottom: 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+    line-height: 1.08;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 1.15;
+  }
+
+  ::selection {
+    background: rgba(255, 90, 51, 0.28);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--flame);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font-family: inherit;
+  }
+
+  /* Scrollbars belong to the desk, not to the operating system. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--edge-lit) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--edge);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 99px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--edge-hot);
+    background-clip: content-box;
+  }
+}
+
+/* ===========================================================================
+   Material — the top-lit panel, and the two corner radii
+   =========================================================================== */
+
+@layer components {
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-top-color: var(--edge-lit);
+    border-radius: var(--radius-card);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  }
+
+  /* Tools get the sharper corner and a darker well. */
+  .tool {
+    background: var(--panel-sunk);
+    border: 1px solid var(--edge);
+    border-top-color: var(--edge-lit);
+    border-radius: var(--radius-tool);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .rule {
+    height: 1px;
+    width: 100%;
+    background: var(--edge);
+  }
+
+  /* --- machine voice ----------------------------------------------------- */
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--edge);
+    background: var(--panel-raised);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    white-space: nowrap;
+  }
+
+  /* --- buttons ------------------------------------------------------------
+     One hot button per view. Everything else is quiet. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding-inline: 18px;
+    border-radius: 10px;
+    border: 1px solid var(--edge);
+    background: var(--panel-raised);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      background 0.16s ease,
+      border-color 0.16s ease,
+      color 0.16s ease,
+      transform 0.16s ease;
+  }
+  .btn:hover {
+    border-color: var(--edge-hot);
+    background: #201d2a;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-flame {
+    background: var(--flame);
+    border-color: var(--flame);
+    color: #180c08;
+    font-weight: 600;
+  }
+  .btn-flame:hover {
+    background: var(--flame-soft);
+    border-color: var(--flame-soft);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--ink-dim);
+  }
+  .btn-ghost:hover {
+    background: var(--panel-raised);
+    color: var(--ink);
+    border-color: var(--edge);
+  }
+
+  .btn-sm {
+    height: 32px;
+    padding-inline: 12px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 10px;
+  }
+
+  /* --- fields ------------------------------------------------------------- */
+  .field {
+    width: 100%;
+    height: 42px;
+    padding-inline: 14px;
+    border-radius: 10px;
+    border: 1px solid var(--edge);
+    background: var(--panel-sunk);
+    color: var(--ink);
+    font-size: 14px;
+    transition:
+      border-color 0.16s ease,
+      background 0.16s ease;
+  }
+  .field::placeholder {
+    color: var(--ink-faint);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--edge-hot);
+    background: #121017;
+  }
+  .field:focus-visible {
+    outline: none;
+  }
+
+  /* Legacy name used by the shadcn form screens. */
+  .input {
+    width: 100% !important;
+    border-color: var(--edge) !important;
+    background: var(--panel-sunk) !important;
+    color: var(--ink) !important;
+  }
+  .input:focus-visible {
+    border-color: var(--edge-hot) !important;
+    box-shadow: none !important;
+  }
+
+  /* --- subject mark -------------------------------------------------------
+     A solid pastel tile carrying the product's existing black glyphs. Keeping
+     the glyphs black and lighting the tile instead is what lets the original
+     icon set survive the move to a dark ground untouched. */
+  .subject-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    flex: none;
+  }
+
+  .subject-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: var(--panel-raised);
+    border: 1px solid var(--edge);
+    color: var(--ink-dim);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ===== the shell ====================================================== */
+
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding: 14px 32px;
+    background: color-mix(in srgb, var(--ground) 82%, transparent);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--edge);
+  }
+
+  .nav-link {
+    position: relative;
+    padding: 6px 2px;
+    font-size: 14px;
+    color: var(--ink-dim);
+    transition: color 0.16s ease;
+  }
+  .nav-link:hover {
+    color: var(--ink);
+  }
+  .nav-link[data-active="true"] {
+    color: var(--ink);
+  }
+  .nav-link[data-active="true"]::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -15px;
+    height: 2px;
+    background: var(--flame);
+  }
+
+  .btn-signin {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding-inline: 16px;
+    border-radius: 999px;
+    border: 1px solid var(--edge-lit);
+    background: transparent;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-signin:hover {
+    border-color: var(--flame);
+    color: var(--flame-soft);
+  }
+
+  /* ===== companion card ================================================== */
+
+  .companion-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 22px;
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-top-color: var(--edge-lit);
+    border-radius: var(--radius-card);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    transition:
+      transform 0.18s ease,
+      border-color 0.18s ease;
+  }
+  /* The subject's own colour, drawn as the lamp line along the card's top
+     edge. It is the only place the luminous ramp is used at full strength. */
+  .companion-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px auto auto -1px;
+    width: calc(100% + 2px);
+    height: 1.5px;
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+    /* Fades out at both ends so the card reads as lit from above rather than
+       underlined in colour — a solid bar edge to edge looks like a highlighter. */
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--subject-lit, var(--edge-lit)) 18%,
+      var(--subject-lit, var(--edge-lit)) 82%,
+      transparent
+    );
+    opacity: 0.5;
+    transition: opacity 0.18s ease;
+  }
+  .companion-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--edge-lit);
+  }
+  .companion-card:hover::before {
+    opacity: 1;
+  }
+
+  .companion-bookmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--edge);
+    background: var(--panel-raised);
+    cursor: pointer;
+    transition:
+      border-color 0.16s ease,
+      background 0.16s ease;
+  }
+  .companion-bookmark:hover {
+    border-color: var(--edge-hot);
+  }
+
+  /* Fills with the card's own subject colour on hover, so each card lights up
+     in its own hue and the flame stays reserved for the page's one real
+     primary action. */
+  .btn-subject {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid var(--edge-lit);
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      background 0.18s ease,
+      color 0.18s ease,
+      border-color 0.18s ease;
+  }
+  .btn-subject:hover {
+    background: var(--subject-lit, var(--flame));
+    border-color: var(--subject-lit, var(--flame));
+    color: #14100e;
+  }
+
+  /* ===== lists and layout ================================================ */
+
+  .home-section {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+  }
+  @media (max-width: 1024px) {
+    .home-section {
+      flex-direction: column;
+    }
+  }
+
+  .companions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    width: 100%;
+  }
+
+  .companion-list {
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-top-color: var(--edge-lit);
+    border-radius: var(--radius-card);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    padding: 24px 26px 10px;
+  }
+
+  .companion-limit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    padding-top: 40px;
+    text-align: center;
+  }
+
+  .rounded-border {
+    border: 1px solid var(--edge);
+    border-top-color: var(--edge-lit);
+    border-radius: var(--radius-card);
+    background: var(--panel);
+  }
+
+  .cta-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--edge);
+    border-top-color: var(--edge-lit);
+    background:
+      radial-gradient(28rem 18rem at 100% 0%, rgba(255, 90, 51, 0.16), transparent 70%),
+      var(--panel);
+  }
+
+  .cta-badge {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--flame-sunk);
+    border: 1px solid rgba(255, 90, 51, 0.35);
+    color: var(--flame-soft);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px;
+    padding-inline: 18px;
+    border-radius: 10px;
+    background: var(--flame);
+    border: 1px solid var(--flame);
+    color: #180c08;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.16s ease;
+  }
+  .btn-primary:hover {
+    background: var(--flame-soft);
+  }
+
+  /* ===== session ========================================================= */
+
+  .scene-launch {
+    width: 100%;
+    height: calc(100dvh - 76px);
+    min-height: 520px;
+  }
+
+  .session-shell {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    height: calc(100vh - 168px);
+    min-height: 560px;
+  }
+  @media (max-width: 1100px) {
+    .session-shell {
+      flex-direction: column;
+      height: auto;
+      min-height: 0;
+    }
+  }
+
+  .session-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 400px;
+    flex: none;
+    min-height: 0;
+  }
+  @media (max-width: 1100px) {
+    .session-rail {
+      width: 100%;
+      height: 560px;
+    }
+  }
+
+  .bubble {
+    max-width: 88%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .bubble-them {
+    align-self: flex-start;
+    background: var(--panel-raised);
+    border: 1px solid var(--edge);
+    border-bottom-left-radius: 4px;
+    color: var(--ink);
+  }
+  .bubble-you {
+    align-self: flex-end;
+    background: var(--flame);
+    border: 1px solid var(--flame);
+    border-bottom-right-radius: 4px;
+    color: #180c08;
+    font-weight: 500;
+  }
+
+  /* Legacy session classes, kept alive for the courtroom screen. */
+  .companion-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 66%;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--edge);
+    background: var(--panel);
+  }
+  .companion-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+  }
+  .user-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 34%;
+  }
+  .user-avatar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--edge);
+    background: var(--panel);
+  }
+  .btn-mic {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--edge);
+    background: var(--panel);
+    cursor: pointer;
+  }
+  .transcript {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+  }
+  .transcript-message {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+  .transcript-fade {
+    pointer-events: none;
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 72px;
+    background: linear-gradient(to top, var(--panel), transparent);
+  }
+}
+
+/* ===========================================================================
+   The waveform — this interface's one signature
+   ---------------------------------------------------------------------------
+   Everything else here is deliberately quiet so that this can be the thing you
+   remember. It is not decoration: it is the session's state, and it is the only
+   element in the product that moves on its own.
+
+     idle       a flat hairline
+     connecting a single lit bar travelling left to right
+     listening  a slow shallow breath — the tutor is waiting on you
+     speaking   full stagger — the tutor has the floor
+   =========================================================================== */
+
+.wave {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  height: 34px;
+  width: 100%;
+}
+
+.wave-bar {
+  width: 3px;
+  flex: none;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--edge-lit);
+  transform-origin: center;
+  transition:
+    height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.35s ease;
+}
+
+.wave[data-state="listening"] .wave-bar {
+  height: 8px;
+  background: var(--edge-hot);
+  animation: wave-breathe 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+.wave[data-state="connecting"] .wave-bar {
+  height: 6px;
+  animation: wave-scan 1.5s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 40ms);
+}
+
+.wave[data-state="speaking"] .wave-bar {
+  height: 26px;
+  background: var(--flame);
+  animation: wave-talk 0.72s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -70ms);
+}
+
+@keyframes wave-breathe {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1.1);
+  }
+}
+
+@keyframes wave-scan {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+    background: var(--edge-lit);
+  }
+  50% {
+    transform: scaleY(1.4);
+    background: var(--flame-soft);
+  }
+}
+
+@keyframes wave-talk {
+  from {
+    transform: scaleY(0.22);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-bar {
+    animation: none !important;
+  }
+  .wave[data-state="speaking"] .wave-bar {
+    background: var(--flame);
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===========================================================================
+   Monaco — dressed to match the desk rather than left in its own skin
+   =========================================================================== */
+
+.monaco-editor,
+.monaco-editor-background,
+.monaco-editor .margin {
+  background-color: var(--panel-sunk) !important;
+}
+.monaco-editor .scroll-decoration {
+  box-shadow: none !important;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}

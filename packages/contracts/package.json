@@ -1,0 +1,16 @@
+{
+  "name": "@converso/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The words the four runtimes agree on. Zero dependencies, so the engine can read it without an install.",
+  "main": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.mjs"
+    }
+  },
+  "files": ["index.mjs", "index.d.ts", "README.md"]
+}

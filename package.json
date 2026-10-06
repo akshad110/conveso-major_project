@@ -1,0 +1,45 @@
+{
+  "name": "converso-suite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Converso — one product, four runtimes. The LMS owns identity and progress; the classroom and the courtroom are heavy experiences it launches.",
+  "workspaces": [
+    "apps/lms",
+    "apps/classroom",
+    "apps/courtroom",
+    "apps/courtroom-engine",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:lms": "npm run dev --workspace apps/lms",
+    "dev:classroom": "npm run dev --workspace apps/classroom",
+    "dev:courtroom": "npm run dev --workspace apps/courtroom",
+    "dev:engine": "npm start --workspace apps/courtroom-engine",
+    "dev": "./start.sh",
+    "verify": "node tools/verify-integration.mjs",
+    "verify:all": "npm run verify && npm run verify:token && npm run verify:outcome && npm run verify:registry && npm run verify:engine && npm run verify:classroom",
+    "verify:engine": "npm test --workspace apps/courtroom-engine",
+    "verify:bridge": "npm run verify --workspace apps/courtroom-engine",
+    "verify:classroom": "npm run verify --workspace apps/classroom",
+    "verify:outcome": "node tools/verify-outcome.mjs",
+    "verify:registry": "node --import ./tools/vite-resolve.mjs tools/verify-registry.mjs",
+    "verify:token": "node --test packages/launch-token/",
+    "preflight": "node deploy/preflight.mjs --env apps/lms/.env.local --env apps/courtroom/.env.local",
+    "preflight:prod": "node deploy/preflight.mjs --production",
+    "assets": "node tools/optimise-assets.mjs --inventory --verbose",
+    "assets:optimise": "node tools/optimise-assets.mjs --verbose",
+    "build:lms": "npm run build --workspace apps/lms",
+    "build:classroom": "npm run build --workspace apps/classroom",
+    "build:courtroom": "npm run build --workspace apps/courtroom"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "meshoptimizer": "^1.3.0",
+    "sharp": "^0.35.5"
+  }
+}

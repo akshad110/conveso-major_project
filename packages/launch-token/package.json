@@ -1,0 +1,19 @@
+{
+  "name": "@converso/launch-token",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Short-lived signed doorways into the heavy apps. node:crypto only — nothing here may ever run in a browser.",
+  "main": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.mjs"
+    }
+  },
+  "scripts": {
+    "test": "node test.mjs"
+  },
+  "files": ["index.mjs", "index.d.ts"]
+}

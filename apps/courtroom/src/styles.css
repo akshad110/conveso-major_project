@@ -1,0 +1,1803 @@
+/**
+ * Courtroom simulator interface.
+ *
+ * Every colour, face and corner in this file comes from
+ * @converso/night-desk/night-desk.css, which main.jsx imports first. The room
+ * used to carry a palette of its own — rosewood, brass, marble, and the saffron
+ * and green of the flag behind the bench — and it was taken from the render.
+ * It is gone, because the render is now one scene inside a product: a student
+ * opens this from a lesson, in an iframe, with the lesson's own chrome around
+ * it, and two beautiful palettes meeting at that border look like a bug. What
+ * the room keeps is its *structure*. Nothing below changes what any panel does
+ * or where it sits.
+ *
+ * Four rules are inherited with the tokens, and this file is held to them:
+ *
+ *   MATERIAL   Matte panels, lit from above by one brighter hairline on the top
+ *              edge (--edge-lit). No glass, no ambient glow behind a card. The
+ *              five blurred panes and four radial glows that were here are
+ *              deliberately gone.
+ *   VOICE      Machine facts — clip names, keys, coordinates, seat ids — in
+ *              --font-mono. Things a person said, in --font-body.
+ *   SHAPE      The floating surfaces (.cp, .turn, .rec, a seat card) are cards,
+ *              so --radius-card. Controls are tools, so --radius-tool. Badges
+ *              and keycaps are chips, so --radius-pill.
+ *   RESTRAINT  --flame is the only hot colour on a screen. It is spent here on
+ *              four things and nothing else: the focus ring, the loading
+ *              horizon and its bar, the seat you are taking, and Send.
+ *
+ * Roles are hues, not fills. [data-seat] on an ancestor sets --seat, and the
+ * two places that name a speaker — the dialogue bar and the seat tag — draw
+ * their left-hand mark in it. With no attribute they fall back to a hairline,
+ * so nothing depends on the attribute being there.
+ *
+ * One inherited caveat: the pack names three webfonts and this app fetches
+ * nothing over the network, so the courtroom renders in the system fallbacks of
+ * those stacks while the LMS renders in the real faces. Dropping the files into
+ * public/fonts with @font-face closes the gap; until then the shapes match and
+ * the faces do not.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* Five local tokens, and no more, because each one is a small licence to
+     diverge from the pack. These two are the veils: the pack has no name for
+     them because only a scene needs them — chrome with a live render behind
+     it. Both are a pack surface at the one alpha the pack itself uses for this
+     (.nd-caption, .nd-hud), so a floating panel here and a caption in the LMS
+     sit at the same depth. */
+  --panel-veil: rgba(19, 17, 24, 0.94);
+  --ground-veil: rgba(7, 6, 16, 0.92);
+
+  /* Grain. The panelling had a wood grain and it stays, because it is material
+     rather than ornament — the same texture, in ink instead of brass. */
+  --grain-lit: rgba(236, 233, 242, 0.022);
+  --grain-dark: rgba(0, 0, 0, 0.05);
+
+  /* The pack's .nd-float shadow, plus the top-edge highlight this room's
+     panels have carried since they were joinery. */
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(236, 233, 242, 0.04) inset;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--ground-deep);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.app canvas {
+  display: block;
+  touch-action: none;
+}
+
+/* The panelling's grain, at an alpha where it reads as material rather than
+   stripes. See --grain-lit. */
+.grain {
+  background-image: repeating-linear-gradient(
+    92deg,
+    var(--grain-lit) 0 1px,
+    transparent 1px 4px,
+    var(--grain-dark) 4px 5px,
+    transparent 5px 11px
+  );
+}
+
+/* ---------------------------------------------------------------- launcher */
+
+.cp-launch {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 15px 10px 13px;
+  border: 1px solid var(--edge);
+  border-top-color: var(--edge-lit);
+  border-radius: var(--radius-tool);
+  background: var(--panel-raised);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  font: 600 12.5px/1 var(--font-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.cp-launch:hover {
+  border-color: var(--edge-lit);
+  color: var(--ink);
+}
+
+.cp-launch-mark {
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--edge-lit);
+  border-radius: 50%;
+  background: var(--edge-hot);
+}
+
+.cp-launch-key {
+  padding: 2px 5px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-pill);
+  color: var(--ink-dim);
+  font: 500 10px/1 var(--font-mono);
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------------------- panel */
+
+.cp {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 40;
+  width: 336px;
+  max-height: min(80vh, 660px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+/* The lit top edge. The pack's own .nd-float::before, stop for stop: one
+   brighter hairline above the panel, and nothing in the middle. */
+.cp::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--edge-lit) 15%, var(--edge-lit) 85%, transparent);
+  opacity: 0.75;
+}
+
+.cp-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 10px;
+  padding: 15px 14px 12px;
+  border-bottom: 1px solid var(--edge);
+}
+
+.cp-eyebrow {
+  display: block;
+  color: var(--ink-faint);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.cp-who {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-top: 5px;
+}
+
+.cp-name {
+  color: var(--ink);
+  font: 400 21px/1.05 var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+.cp-state {
+  font: 500 9.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cp-state.ready {
+  color: var(--good);
+}
+.cp-state.pending {
+  color: var(--warn);
+}
+.cp-state.missing {
+  color: var(--ink-dim);
+}
+
+.cp-close {
+  padding: 4px 8px 5px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-tool);
+  background: none;
+  color: var(--ink-dim);
+  font: 400 16px/1 var(--font-body);
+  cursor: pointer;
+}
+
+.cp-close:hover {
+  border-color: var(--edge);
+  color: var(--ink);
+}
+
+.cp-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cp-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.cp-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--edge-lit);
+  background-clip: content-box;
+}
+
+.cp-sec {
+  padding: 13px 14px;
+  border-top: 1px solid var(--edge);
+}
+
+.cp-sec:first-child {
+  border-top: 0;
+}
+
+.cp-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 9px;
+  color: var(--ink-faint);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.cp-label em {
+  color: var(--ink-dim);
+  font: 400 10px/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+/* ----------------------------------------------------- seating plan picker */
+
+.pick {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 12px;
+}
+
+.plan {
+  position: relative;
+  height: 158px;
+  border: 1px solid var(--edge-lit);
+  border-radius: var(--radius-tool);
+  background: var(--ground-deep);
+}
+
+/* The bench, at the head of the room — the plan's one structural mark, and the
+   thing that tells you which way you are looking at the room. */
+.plan-bench {
+  position: absolute;
+  top: 6%;
+  bottom: 6%;
+  left: 0;
+  width: 15px;
+  border-right: 1px solid var(--edge-lit);
+  background: var(--panel-raised);
+}
+
+.plan-bench span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  color: var(--ink-faint);
+  font: 600 8px/1 var(--font-body);
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+
+/* Seats are placed inside an inset field so names have room to sit beside the
+   outer edges without spilling past the border. */
+.plan-field {
+  position: absolute;
+  inset: 14px 40px 14px 26px;
+}
+
+.plan-seat {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.plan-seat.above {
+  flex-direction: column-reverse;
+  gap: 5px;
+}
+
+.plan-dot {
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--ink-dim);
+  border-radius: 50%;
+  background: var(--panel-raised);
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+.plan-name {
+  color: var(--ink-dim);
+  font: 500 8.5px/1 var(--font-body);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.plan-seat.primary .plan-dot {
+  width: 12px;
+  height: 12px;
+  border-color: var(--edge-lit);
+}
+
+.plan-seat.primary .plan-name {
+  color: var(--ink);
+  font-size: 9.5px;
+}
+
+.plan-seat:hover .plan-dot {
+  background: var(--edge-lit);
+}
+
+.plan-seat:hover .plan-name {
+  color: var(--ink);
+}
+
+.plan-seat.on .plan-dot {
+  border-color: var(--flame);
+  background: var(--flame);
+  box-shadow: 0 0 0 3px var(--flame-sunk);
+  transform: scale(1.1);
+}
+
+.plan-seat.on .plan-name {
+  color: var(--ink);
+}
+
+.plan-seat.missing .plan-dot {
+  border-style: dashed;
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------- live readout */
+
+.read {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.read-row {
+  min-width: 0;
+}
+
+.read-k {
+  display: block;
+  color: var(--ink-faint);
+  font: 600 8.5px/1 var(--font-body);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.read-v {
+  display: block;
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font: 500 10.5px/1.35 var(--font-mono);
+}
+
+.read-v .sub {
+  color: var(--ink-dim);
+}
+
+.read-fb {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 1px 5px 2px;
+  border: 1px solid color-mix(in srgb, var(--warn) 45%, var(--edge));
+  border-radius: var(--radius-pill);
+  color: var(--warn);
+  font: 600 8.5px/1.3 var(--font-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ----------------------------------------------------------------- actions */
+
+.acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.act {
+  padding: 6px 9px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: none;
+  color: var(--ink);
+  font: 500 10.5px/1 var(--font-body);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 110ms ease, color 110ms ease, background-color 110ms ease;
+}
+
+.act:hover {
+  border-color: var(--edge-lit);
+  background: var(--panel-raised);
+  color: var(--ink);
+}
+
+.act:active {
+  background: var(--edge);
+}
+
+.act-key {
+  margin-left: 6px;
+  color: var(--ink-dim);
+  font: 500 9px/1 var(--font-mono);
+}
+
+.act:hover .act-key {
+  color: var(--ink-faint);
+}
+
+.act.raw {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------ selects & controls */
+
+.cp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.field {
+  min-width: 0;
+}
+
+.field > span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ink-faint);
+  font: 600 8.5px/1 var(--font-body);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.sel {
+  width: 100%;
+  padding: 6px 7px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: var(--panel-sunk);
+  color: var(--ink);
+  font: 500 10.5px/1.2 var(--font-body);
+  cursor: pointer;
+}
+
+.sel:hover {
+  border-color: var(--edge-lit);
+}
+
+.toggle {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: var(--panel-sunk);
+  color: var(--ink-dim);
+  font: 500 10.5px/1.2 var(--font-body);
+  cursor: pointer;
+}
+
+.toggle.on {
+  border-color: var(--edge-lit);
+  background: var(--edge);
+  color: var(--ink);
+}
+
+.toggle:hover {
+  border-color: var(--edge-lit);
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------- disclosure */
+
+.disc {
+  border-top: 1px solid var(--edge);
+}
+
+.disc > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  color: var(--ink-faint);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+}
+
+.disc > summary::-webkit-details-marker {
+  display: none;
+}
+
+.disc > summary::after {
+  content: '+';
+  color: var(--ink-dim);
+  font: 400 13px/1 var(--font-mono);
+}
+
+.disc[open] > summary::after {
+  content: '–';
+}
+
+.disc > summary:hover {
+  color: var(--ink);
+}
+
+.disc-body {
+  padding: 0 14px 14px;
+}
+
+.keys {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 10px;
+  align-items: baseline;
+}
+
+.keys dt {
+  justify-self: start;
+  padding: 2px 5px 3px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  font: 500 9.5px/1 var(--font-mono);
+  white-space: nowrap;
+}
+
+.keys dd {
+  margin: 0;
+  color: var(--ink-dim);
+  font: 400 10.5px/1.3 var(--font-body);
+}
+
+.note {
+  margin: 0;
+  color: var(--ink-dim);
+  font: 400 10.5px/1.45 var(--font-body);
+}
+
+.note code {
+  color: var(--ink-faint);
+  font: 500 10px/1 var(--font-mono);
+}
+
+/* --------------------------------------------------------------------- HUD */
+
+.hud {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0 22px;
+  pointer-events: none;
+  transition: padding 200ms ease;
+}
+
+/* Keep the spoken line clear of the open panel rather than sliding under it. */
+.app[data-controls='open'] .hud {
+  padding-right: 372px;
+}
+
+/* Same courtesy for the turn panel on the left and the record on the right. */
+.app[data-turn='open'] .hud {
+  padding-left: 404px;
+}
+
+.app[data-record='open'] .hud {
+  padding-right: 462px;
+}
+
+.hud-state {
+  padding: 6px 16px 7px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: var(--panel-veil);
+  color: var(--ink-faint);
+  font: 600 10px/1 var(--font-body);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.hud-line {
+  max-width: 640px;
+  padding: 12px 18px 13px;
+  border: 1px solid var(--edge);
+  border-left: 2px solid var(--seat, var(--edge-lit));
+  border-radius: var(--radius-tool);
+  background: var(--panel-veil);
+}
+
+.hud-line.paused {
+  opacity: 0.5;
+}
+
+/* The speaker's name, in the speaker's own colour — the pack maps each seat
+   to one accent and DialogueBar sets data-seat on the line above. Nobody
+   named means no --seat, and the name stays the quiet label it was. */
+.hud-speaker {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--seat, var(--ink-faint));
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.hud-text {
+  color: var(--ink);
+  font: 400 15.5px/1.45 var(--font-body);
+}
+
+/* ----------------------------------------------------------------- loading */
+
+.loading {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: var(--ground-deep);
+}
+
+.loading-inner {
+  width: min(420px, 78vw);
+  text-align: center;
+}
+
+.loading-rule {
+  height: 1px;
+  margin: 0 auto 20px;
+  background: linear-gradient(90deg, transparent, var(--flame), transparent);
+}
+
+.loading-title {
+  color: var(--ink);
+  font: 400 27px/1.15 var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+.loading-sub {
+  margin-top: 7px;
+  color: var(--ink-faint);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.loading-bar {
+  height: 2px;
+  margin: 26px 0 11px;
+  overflow: hidden;
+  background: var(--edge);
+}
+
+.loading-fill {
+  height: 100%;
+  background: var(--flame);
+  transition: width 220ms ease;
+}
+
+.loading-meta {
+  color: var(--ink-dim);
+  font: 400 10.5px/1.4 var(--font-mono);
+}
+
+/*
+ * The five lines of the assembly. A cause list, not a progress bar: each row is
+ * a fact about the room with its own state, and they tick in whatever order the
+ * network delivers them.
+ */
+.loading-stages {
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.loading-stage {
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--edge);
+  font: 500 11px/1 var(--font-body);
+  letter-spacing: 0.04em;
+}
+
+.loading-stage:last-child {
+  border-bottom: 0;
+}
+
+/* A square that fills when the fact becomes true — --good, because a finished
+   step is good news rather than a hot one, which is what the pack's
+   .nd-step[data-state='done'] does with the same dot. No spinner: a row that
+   is waiting is waiting, and animating it would imply progress it cannot know. */
+.loading-stage-mark {
+  width: 6px;
+  height: 6px;
+  margin-left: 3px;
+  border: 1px solid var(--edge);
+  background: none;
+  transition: background 200ms ease, border-color 200ms ease;
+}
+
+.loading-stage[data-state='done'] .loading-stage-mark {
+  border-color: var(--good);
+  background: var(--good);
+}
+
+.loading-stage-label {
+  color: var(--ink-dim);
+  transition: color 200ms ease;
+}
+
+.loading-stage[data-state='done'] .loading-stage-label {
+  color: var(--ink);
+}
+
+.loading-stage-detail {
+  color: var(--ink-dim);
+  font: 400 9.5px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  opacity: 0.72;
+}
+
+/* ----------------------------------------------------- the court gone quiet */
+
+/*
+ * Top centre, clear of the turn panel (bottom left), the record (right) and the
+ * controls launcher. Deliberately not a curtain: the room stays visible and lit
+ * behind it, because the room is not what broke.
+ */
+.quiet {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 70;
+  width: min(620px, calc(100vw - 36px));
+  animation: quiet-in 220ms ease-out both;
+}
+
+@keyframes quiet-in {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.quiet-inner {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 15px;
+  border: 1px solid var(--edge);
+  border-top-color: var(--edge-lit);
+  border-radius: var(--radius-tool);
+  background: var(--panel-veil);
+}
+
+/* --warn, not --bad: this is a wait, not a failure, and the court is coming
+   back. */
+.quiet-mark {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--warn);
+  animation: quiet-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes quiet-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiet { animation: none; }
+  .quiet-mark { animation: none; opacity: 1; }
+}
+
+.quiet-title {
+  color: var(--ink);
+  font: 400 14px/1.2 var(--font-body);
+}
+
+.quiet-body {
+  margin-top: 3px;
+  color: var(--ink-dim);
+  font: 400 11.5px/1.45 var(--font-body);
+}
+
+.quiet-status {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+  color: var(--warn);
+  font: 500 10px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.quiet-attempt {
+  color: var(--ink-dim);
+  font: 400 9px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+/* ------------------------------------------------------- the launch gate */
+
+/*
+ * Reuses .loading wholesale — same curtain, same rule, same title face — because
+ * the handshake and the download are one wait to the person waiting. Only the
+ * parts .loading has no equivalent for are declared here.
+ */
+
+/*
+ * The handshake has no percentage to report, so the bar sweeps instead of
+ * filling. A bar that sat at 4% for two seconds would be reporting progress it
+ * does not have.
+ */
+.gate-indeterminate {
+  width: 34%;
+  animation: gate-sweep 1.15s ease-in-out infinite;
+}
+
+@keyframes gate-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(295%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-indeterminate {
+    width: 100%;
+    animation: none;
+    opacity: 0.45;
+  }
+}
+
+/* A refusal is a stop, not a wait: no warm centre light behind it. */
+.gate-refused {
+  background: var(--ground);
+}
+
+.gate-message {
+  margin: 16px auto 0;
+  max-width: 34em;
+  color: var(--ink-dim);
+  font: 400 14px/1.55 var(--font-body);
+}
+
+.gate-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 26px;
+}
+
+.gate-act {
+  padding: 9px 16px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: none;
+  color: var(--ink-dim);
+  font: 500 11.5px/1 var(--font-body);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease;
+}
+
+.gate-act:hover {
+  border-color: var(--edge-lit);
+  color: var(--ink);
+}
+
+.gate-act[data-weight='primary'] {
+  border-color: var(--flame);
+  color: var(--flame);
+}
+
+.gate-act:focus-visible {
+  outline: 1px solid var(--flame);
+  outline-offset: 2px;
+}
+
+.gate-code {
+  margin-top: 22px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------ start screen */
+
+/*
+ * The seat you take. Sits under the loading curtain (z 90) on purpose, so the
+ * room has finished loading behind it before the choice is offered.
+ */
+.start {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 28px 22px;
+  overflow-y: auto;
+  background: var(--ground-veil);
+}
+
+.start-inner {
+  width: min(880px, 100%);
+  text-align: center;
+}
+
+.start-rule {
+  height: 1px;
+  margin: 0 auto 18px;
+  background: linear-gradient(90deg, transparent, var(--flame), transparent);
+}
+
+.start-eyebrow {
+  color: var(--ink-faint);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.start-title {
+  margin: 9px 0 0;
+  color: var(--ink);
+  font: 400 34px/1.14 var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+/* The charges, as a cause list reads them: statute first, then the offence. */
+.start-charges {
+  max-width: 620px;
+  margin: 16px auto 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.start-charges li {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--edge);
+  color: var(--ink-dim);
+  font: 400 12.5px/1.4 var(--font-body);
+}
+
+.start-statute {
+  color: var(--ink-faint);
+  font: 500 10.5px/1.6 var(--font-mono);
+}
+
+.start-ask {
+  margin: 26px 0 14px;
+  color: var(--ink);
+  font: 400 14.5px/1.5 var(--font-body);
+}
+
+.start-seats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  text-align: left;
+}
+
+.start-seats .seat {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-height: 196px;
+  padding: 16px 15px 15px;
+  border: 1px solid var(--edge);
+  border-top-color: var(--edge-lit);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: border-color 130ms ease, transform 130ms ease;
+}
+
+.start-seats .seat:hover:not(:disabled) {
+  border-color: var(--edge-lit);
+  transform: translateY(-2px);
+}
+
+.start-seats .seat:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.start-seats .seat[data-taking='yes'] {
+  border-color: var(--flame);
+  opacity: 1;
+}
+
+.seat-bench {
+  color: var(--ink-faint);
+  font: 600 9px/1 var(--font-body);
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.seat-label {
+  color: var(--ink);
+  font: 400 23px/1.1 var(--font-display);
+}
+
+.seat-duty {
+  flex: 1;
+  color: var(--ink-dim);
+  font: 400 12px/1.5 var(--font-body);
+}
+
+.seat-go {
+  padding-top: 9px;
+  border-top: 1px solid var(--edge);
+  color: var(--ink);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.start-watch {
+  margin-top: 18px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-tool);
+  background: none;
+  color: var(--ink-dim);
+  font: 500 11.5px/1 var(--font-body);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.start-watch:hover:not(:disabled) {
+  border-color: var(--edge);
+  color: var(--ink);
+}
+
+.start-error {
+  margin-top: 14px;
+  color: var(--warn);
+  font: 500 11.5px/1.45 var(--font-body);
+}
+
+/* --------------------------------------------------------- the human's turn */
+
+/*
+ * Left side, so it never sits under the control panel or the record. Everything
+ * inside is rendered from the engine's YOUR_TURN payload.
+ */
+.turn {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 50;
+  width: 372px;
+  max-height: min(84vh, 720px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--edge-lit);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.turn::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--edge-lit) 15%, var(--edge-lit) 85%, transparent);
+}
+
+.turn-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 10px;
+  padding: 15px 14px 12px;
+  border-bottom: 1px solid var(--edge);
+}
+
+.turn-eyebrow {
+  color: var(--ink);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.turn-seat {
+  margin-top: 5px;
+  color: var(--ink);
+  font: 400 21px/1.05 var(--font-display);
+}
+
+.turn-where {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  color: var(--ink-dim);
+  font: 500 9.5px/1 var(--font-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.turn-num {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.turn-scroll {
+  padding: 13px 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.turn-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.turn-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--edge-lit);
+  background-clip: content-box;
+}
+
+.turn-note {
+  margin: 0 0 11px;
+  color: var(--ink);
+  font: 400 13px/1.5 var(--font-body);
+}
+
+/* A refusal, in the court's own words. */
+.turn-refused {
+  margin: 0 0 11px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--warn) 45%, var(--edge));
+  border-left: 2px solid var(--warn);
+  border-radius: var(--radius-tool);
+  color: var(--ink);
+  font: 400 12px/1.45 var(--font-body);
+}
+
+.turn-refused span {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--warn);
+  font: 600 8.5px/1 var(--font-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.turn-ctx {
+  margin: 0 0 9px;
+  color: var(--ink);
+  font: 400 12.5px/1.45 var(--font-body);
+}
+
+.turn-ctx span {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--ink-faint);
+  font: 600 8.5px/1 var(--font-body);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.turn-ctx.quote {
+  padding-left: 9px;
+  border-left: 1px solid var(--edge);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+}
+
+.turn-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 14px 0 8px;
+  color: var(--ink-faint);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.turn-label em {
+  color: var(--ink-dim);
+  font: 400 10px/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.turn-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.turn-act {
+  padding: 7px 10px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: none;
+  color: var(--ink);
+  font: 500 11.5px/1 var(--font-body);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: border-color 110ms ease, color 110ms ease, background-color 110ms ease;
+}
+
+.turn-act.wide {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+}
+
+.turn-act:hover {
+  border-color: var(--edge-lit);
+  color: var(--ink);
+}
+
+.turn-act[data-on='yes'] {
+  border-color: var(--edge-hot);
+  background: var(--panel-raised);
+  color: var(--ink);
+}
+
+/* Grounds the objection engine actually found in the question on the floor. */
+.turn-grounds {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ground {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ground:hover {
+  border-color: var(--edge-lit);
+}
+
+.ground[data-on='yes'] {
+  border-color: var(--edge-hot);
+  background: var(--panel-raised);
+}
+
+.ground-label {
+  color: var(--ink);
+  font: 500 12.5px/1.2 var(--font-body);
+}
+
+.ground[data-on='yes'] .ground-label {
+  color: var(--ink);
+}
+
+.ground-note {
+  color: var(--ink-dim);
+  font: 400 11px/1.4 var(--font-body);
+}
+
+.turn-field {
+  display: block;
+  margin-top: 12px;
+}
+
+.turn-field > span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ink-faint);
+  font: 600 8.5px/1 var(--font-body);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.turn-one {
+  display: block;
+  color: var(--ink);
+  font: 500 11px/1.3 var(--font-mono);
+}
+
+.turn-say {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: var(--panel-sunk);
+  color: var(--ink);
+  font: 400 14px/1.5 var(--font-body);
+  resize: vertical;
+}
+
+.turn-say:focus {
+  border-color: var(--edge-lit);
+  outline: none;
+}
+
+.turn-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px 13px;
+  border-top: 1px solid var(--edge);
+  background: var(--ground-veil);
+}
+
+.turn-go {
+  padding: 9px 15px;
+  border: 1px solid var(--flame);
+  border-radius: var(--radius-tool);
+  background: var(--flame);
+  color: var(--ground-deep);
+  font: 600 11px/1 var(--font-body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.turn-go:hover:not(:disabled) {
+  background: var(--flame-soft);
+  color: var(--ground-deep);
+}
+
+.turn-go:disabled {
+  border-color: var(--edge);
+  background: none;
+  color: var(--ink-dim);
+  cursor: default;
+}
+
+.turn-alt {
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-tool);
+  background: none;
+  color: var(--ink-dim);
+  font: 500 11px/1 var(--font-body);
+  cursor: pointer;
+}
+
+.turn-alt:hover:not(:disabled) {
+  border-color: var(--edge);
+  color: var(--ink);
+}
+
+.turn-alt:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.turn-hint {
+  margin-left: auto;
+  color: var(--ink-dim);
+  font: 500 9.5px/1.3 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-align: right;
+}
+
+/* The seat you hold, once the trial is running and nothing is being asked. */
+.seat-tag {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 30;
+  padding: 8px 13px 9px;
+  border: 1px solid var(--edge);
+  border-left: 2px solid var(--seat, var(--edge-lit));
+  border-radius: var(--radius-tool);
+  background: var(--panel-veil);
+  color: var(--ink);
+  font: 400 14px/1.1 var(--font-body);
+}
+
+.seat-tag span {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--seat, var(--ink-faint));
+  font: 600 8.5px/1 var(--font-body);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* What the clerk is offering, while the pointer is on them. */
+.pick-hint {
+  position: fixed;
+  left: 50%;
+  top: 22px;
+  z-index: 30;
+  transform: translateX(-50%);
+  padding: 7px 14px 8px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: var(--panel-veil);
+  color: var(--ink);
+  font: 600 10px/1 var(--font-body);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------- court record */
+
+.rec {
+  position: fixed;
+  right: 18px;
+  top: 18px;
+  bottom: 18px;
+  z-index: 45;
+  width: 430px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  transition: right 200ms ease;
+}
+
+.rec::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--edge-lit) 15%, var(--edge-lit) 85%, transparent);
+  opacity: 0.75;
+}
+
+/* Stand off the control panel rather than sliding under it. */
+.app[data-controls='open'] .rec {
+  right: 372px;
+}
+
+.rec-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 10px;
+  padding: 15px 14px 12px;
+  border-bottom: 1px solid var(--edge);
+}
+
+.rec-eyebrow {
+  color: var(--ink-faint);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.rec-title {
+  margin-top: 5px;
+  color: var(--ink);
+  font: 400 19px/1.15 var(--font-display);
+}
+
+.rec-scroll {
+  flex: 1;
+  padding: 4px 14px 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.rec-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.rec-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--edge-lit);
+  background-clip: content-box;
+}
+
+.rec-empty {
+  margin: 14px 0 0;
+  color: var(--ink-dim);
+  font: 400 12.5px/1.5 var(--font-body);
+}
+
+.rec-phase {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 14px 0 8px;
+  padding: 7px 0 6px;
+  border-bottom: 1px solid var(--edge);
+  background: var(--panel);
+  color: var(--ink-faint);
+  font: 600 9.5px/1 var(--font-body);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.rec-line {
+  margin: 0 0 11px;
+  color: var(--ink);
+  font: 400 13.5px/1.55 var(--font-body);
+}
+
+.rec-line.live {
+  opacity: 0.55;
+}
+
+.rec-who {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-bottom: 2px;
+  color: var(--seat, var(--ink-faint));
+  font: 600 9px/1 var(--font-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Your own words, marked so the record shows what you did. */
+.rec-who em {
+  padding: 1px 4px 2px;
+  border: 1px solid color-mix(in srgb, var(--good) 45%, var(--edge));
+  border-radius: var(--radius-pill);
+  color: var(--good);
+  font: 600 8px/1 var(--font-body);
+  font-style: normal;
+  letter-spacing: 0.1em;
+}
+
+.rec-who i {
+  color: var(--ink-dim);
+  font: 400 9px/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.rec-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 13px;
+  border-top: 1px solid var(--edge);
+  background: var(--ground-veil);
+}
+
+.rec-count {
+  margin-left: auto;
+  color: var(--ink-dim);
+  font: 500 10px/1.3 var(--font-mono);
+}
+
+/* ------------------------------------------------------------- foundations */
+
+button,
+select {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--flame);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .cp {
+    right: 10px;
+    left: 10px;
+    bottom: 10px;
+    width: auto;
+    max-height: 74vh;
+  }
+
+  .pick {
+    grid-template-columns: 1fr;
+  }
+
+  .plan {
+    height: 176px;
+  }
+
+  .cp-launch {
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .app[data-controls='open'] .hud {
+    padding-right: 22px;
+    bottom: calc(74vh + 22px);
+  }
+
+  /* One column, full width: three seat cards side by side do not fit a phone,
+     and neither does a 372px panel beside a dialogue bar. */
+  .start-seats {
+    grid-template-columns: 1fr;
+  }
+
+  .start-seats .seat {
+    min-height: 0;
+  }
+
+  .start-charges li {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .turn,
+  .rec {
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  .turn {
+    bottom: 10px;
+    max-height: 80vh;
+  }
+
+  .rec {
+    top: 10px;
+    bottom: 10px;
+  }
+
+  .app[data-controls='open'] .rec {
+    right: 10px;
+  }
+
+  .app[data-turn='open'] .hud,
+  .app[data-record='open'] .hud {
+    display: none;
+  }
+
+  .seat-tag {
+    left: 10px;
+    bottom: 10px;
+  }
+}
+/* ---- cutscenes ---- */
+.cutscene {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--ground-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+}
+.cutscene-bg {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  overflow: hidden;
+  box-shadow: 0 0 100px var(--ground-deep);
+}
+.cutscene-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 60%, var(--ground-veil) 100%);
+  pointer-events: none;
+}
+.cutscene-panel {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  background: var(--panel-veil);
+  border: 2px solid var(--edge-lit);
+  padding: 24px;
+  color: var(--ink);
+  text-align: center;
+}
+.cutscene-text {
+  font-size: 24px;
+  line-height: 1.5;
+  margin: 0;
+}
+.cutscene-text .cursor {
+  animation: blink 0.8s infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 0 } 50% { opacity: 1 } }
+.cutscene-skip {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: 1px solid var(--edge-lit);
+  color: var(--ink-faint);
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.5;
+}
+.cutscene-skip:hover { opacity: 1; }

@@ -1,0 +1,25 @@
+[
+  {
+    "type": "START_CASE",
+    "actor": "judge"
+  },
+  {
+    "type": "OPENING_STATEMENT",
+    "actor": "prosecutor"
+  },
+  {
+    "type": "SUBMIT_EVIDENCE",
+    "actor": "clerk",
+    "evidence": {
+      "id": "EX-P1",
+      "title": "UPI transaction screenshot",
+      "description": "Screenshot showing payment request and destination account details.",
+      "evidenceType": "Document"
+    }
+  },
+  {
+    "type": "QUESTION_WITNESS",
+    "actor": "defense",
+    "question": "You did not personally see who created the payment link, correct?"
+  }
+]

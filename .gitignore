@@ -1,0 +1,62 @@
+# Dependencies — four runtimes' worth, and npm can rebuild all of it.
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Secrets. .env.example is committed on purpose and is the only one that is —
+# it holds the annotations, never the values.
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Caches
+.cache/
+.turbo/
+.eslintcache
+.vite/
+coverage/
+
+# The asset optimiser's working files. The originals in
+# apps/courtroom/public/models ARE committed — they are the product — but the
+# optimiser's output and its backups are reproducible from them.
+tools/.assets-out/
+*.glb.orig
+*.glb.bak
+*.original.glb
+
+# ─────────────────────────────────────────────────────────────────────────────
+# The 3D assets, and why they are not in here
+# ─────────────────────────────────────────────────────────────────────────────
+# 275 MB of models across the two scenes, one of which — CourtRoom.glb at 105 MB
+# — is over GitHub's hard 100 MB per-file limit, so a repository containing it
+# cannot be pushed at all. There is no git-lfs on this machine to route it
+# through, and a binary this size committed once lives in the history forever:
+# adding files to Git later costs nothing, removing them costs a filter-repo and
+# every clone.
+#
+# The compressed GLBs are small enough to ship with the app. The untouched
+# originals live in tools/.assets-out and must not be published.
+apps/classroom/public/models/*.fbx
+apps/courtroom/public/video/*.mp4
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+*.log

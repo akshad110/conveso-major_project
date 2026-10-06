@@ -1,0 +1,420 @@
+{
+  "caseId": "state-v-malhotra",
+  "title": "State versus Dev Malhotra",
+  "jurisdiction": "Training simulation inspired by Indian criminal procedure — Sessions Court, Bengaluru City. Charges framed under the Bharatiya Nyaya Sanhita and the Information Technology Act, 2000.",
+  "charges": [
+    {
+      "id": "CH1",
+      "statute": "BNS s.318(4)",
+      "label": "Cheating and dishonestly inducing delivery of property",
+      "particulars": "That the accused, by presenting a counterfeit payment page in the name of Sunrise Electronics, dishonestly induced the complainant to transfer Rs 2,40,000 to an account not belonging to the vendor.",
+      "elements": [
+        "deception of the complainant",
+        "dishonest inducement to deliver property",
+        "resulting delivery of property"
+      ]
+    },
+    {
+      "id": "CH2",
+      "statute": "IT Act s.66C",
+      "label": "Identity theft by fraudulent use of an electronic signature or unique identification feature",
+      "particulars": "That the accused fraudulently used the trade name, branding and payment identifiers of Sunrise Electronics.",
+      "elements": [
+        "use of another's unique identification feature",
+        "fraudulent or dishonest intent"
+      ]
+    },
+    {
+      "id": "CH3",
+      "statute": "IT Act s.66D",
+      "label": "Cheating by personation using a computer resource",
+      "particulars": "That the accused personated the vendor through a computer resource in order to cheat.",
+      "elements": [
+        "personation by means of a computer resource",
+        "cheating flowing from that personation"
+      ]
+    }
+  ],
+
+  "facts": [
+    {
+      "id": "F01",
+      "type": "procedural",
+      "text": "On 14 March 2025 the complainant Ramesh Iyer lodged a first information report at the Cyber Crime Police Station, Bengaluru City, alleging that Rs 2,40,000 intended for Sunrise Electronics had been diverted to an unknown account.",
+      "knownTo": ["all"]
+    },
+    {
+      "id": "F02",
+      "type": "procedural",
+      "text": "The charges were read to the accused, who pleaded not guilty and elected to contest the matter.",
+      "knownTo": ["all"]
+    },
+    {
+      "id": "F03",
+      "type": "background",
+      "text": "The complainant had agreed to buy a commercial air-conditioning unit from Sunrise Electronics for Rs 2,40,000 and had visited the shop on 10 March 2025 to settle payment.",
+      "knownTo": ["all"]
+    },
+    {
+      "id": "F04",
+      "type": "background",
+      "text": "The payment link the complainant used resolved to the domain pay-sunriseelectronics.in, which had been registered six days before the transaction and is not the vendor's domain.",
+      "knownTo": ["all"]
+    },
+    {
+      "id": "F05",
+      "type": "background",
+      "text": "The money reached a current account at Trinity Co-operative Bank in the name of 'S. E. Traders', opened with identity documents the bank has since accepted were forged. No withdrawal from that account has been traced to any accused person.",
+      "knownTo": ["all"]
+    },
+    {
+      "id": "F06",
+      "type": "background",
+      "text": "In November 2024 the accused was engaged as a freelance developer by Sunrise Electronics to build the vendor's genuine online payment page, for a fee of Rs 18,000.",
+      "knownTo": ["all"]
+    },
+    {
+      "id": "F07",
+      "type": "technical",
+      "text": "The hosting account that served the counterfeit page was registered in the accused's own name and email address, and had been active since 2023 for his freelance work.",
+      "knownTo": ["prosecutor", "defense", "defendant", "W_DESHMUKH", "W_KHURANA"]
+    },
+    {
+      "id": "F08",
+      "type": "technical",
+      "text": "The hosting provider's audit trail records a deployment to that account at 02:14 on 8 March 2025, originating from the broadband connection at the accused's flat in Kaggadasapura.",
+      "knownTo": ["prosecutor", "W_DESHMUKH", "W_KHURANA"]
+    },
+    {
+      "id": "F09",
+      "type": "contested",
+      "text": "The same audit trail records that a deployment entry was deleted from the account on 12 March 2025, two days before the complaint was registered.",
+      "knownTo": ["prosecutor", "defense", "defendant", "W_DESHMUKH"]
+    },
+    {
+      "id": "F10",
+      "type": "contested",
+      "text": "The complainant recalls a young man in a grey Sunrise Electronics polo shirt standing at the counter and holding out a phone screen showing the payment link, and identifies that man as the accused.",
+      "knownTo": ["W_IYER", "prosecutor"]
+    },
+    {
+      "id": "F11",
+      "type": "technical",
+      "text": "The link the complainant opened arrived as an SMS delivered to his mobile number at 11:07 on 10 March 2025 from a commercial bulk-messaging gateway, while he was at the shop counter.",
+      "knownTo": ["prosecutor", "defense", "W_DESHMUKH"]
+    },
+    {
+      "id": "F12",
+      "type": "technical",
+      "text": "Sunrise Electronics employs a counter assistant, Aakash Poojary, who is of similar age and build to the accused and who was on shift at the counter on the morning of 10 March 2025.",
+      "knownTo": ["defense", "defendant", "W_IYER"]
+    },
+    {
+      "id": "F13",
+      "type": "technical",
+      "text": "The counterfeit page shares a build fingerprint and CSS bundle hash with the genuine Sunrise Electronics page, which is consistent either with the same author or with a copy taken from the publicly served genuine site.",
+      "knownTo": ["prosecutor", "defense", "W_DESHMUKH"]
+    },
+    {
+      "id": "F14",
+      "type": "technical",
+      "text": "The flat's broadband sits behind carrier-grade network address translation and is shared over one unsecured router, so a connection log identifies the premises and not any individual within it.",
+      "knownTo": ["defense", "W_DESHMUKH"]
+    },
+    {
+      "id": "F15",
+      "type": "contested",
+      "text": "Three people held keys to the flat and used its network: the accused, his flatmate Rohit Baruah, and a third tenant who was abroad from 1 March. Rohit Baruah worked at the same development studio as the accused and had used the accused's laptop before.",
+      "knownTo": ["defense", "defendant"]
+    },
+    {
+      "id": "F16",
+      "type": "contested",
+      "text": "Rohit Baruah left Bengaluru on 13 March 2025, has not responded to summons, and is shown as untraced in the investigation papers.",
+      "knownTo": ["prosecutor", "defense", "defendant", "W_KHURANA"]
+    },
+    {
+      "id": "F17",
+      "type": "contested",
+      "text": "The accused's laptop remained unsealed in the investigating officer's vehicle for roughly forty minutes between seizure at the flat and formal sealing at the station, and the seizure memo does not record that interval.",
+      "knownTo": ["W_KHURANA"]
+    },
+    {
+      "id": "F18",
+      "type": "background",
+      "text": "On the night of 7 to 8 March 2025 the accused was working an overnight software release with two colleagues, one of whom was Rohit Baruah, and all three were in and out of the flat.",
+      "knownTo": ["defendant", "defense"]
+    },
+    {
+      "id": "F19",
+      "type": "procedural",
+      "text": "No forensic examination of Rohit Baruah's own devices was ever carried out, because he was not named as a suspect at any stage of the investigation.",
+      "knownTo": ["prosecutor", "defense", "W_KHURANA"]
+    }
+  ],
+
+  "timeline": [
+    { "at": "2024-11-19", "text": "Accused delivers the genuine Sunrise Electronics payment page under a freelance contract." },
+    { "at": "2025-03-04", "text": "Domain pay-sunriseelectronics.in registered through a reseller paid for in cryptocurrency." },
+    { "at": "2025-03-06", "text": "'S. E. Traders' current account opened at Trinity Co-operative Bank on forged documents." },
+    { "at": "2025-03-08T02:14", "text": "Counterfeit page deployed to the accused's hosting account from the flat's broadband connection." },
+    { "at": "2025-03-10T11:07", "text": "Bulk-SMS gateway delivers the counterfeit payment link to the complainant's phone while he is at the shop." },
+    { "at": "2025-03-10T11:22", "text": "Complainant transfers Rs 2,40,000; funds settle in the 'S. E. Traders' account." },
+    { "at": "2025-03-12T21:40", "text": "A deployment entry is deleted from the accused's hosting account." },
+    { "at": "2025-03-13", "text": "Rohit Baruah leaves Bengaluru." },
+    { "at": "2025-03-14", "text": "Complaint registered; investigation opened by the Cyber Crime Police Station." },
+    { "at": "2025-03-18", "text": "Accused's flat searched; laptop seized." }
+  ],
+
+  "victim": {
+    "id": "V_IYER",
+    "name": "Ramesh Iyer",
+    "description": "Fifty-one year old proprietor of a small catering business, not technically confident, transferred the money himself from his phone.",
+    "loss": "Rs 2,40,000",
+    "isWitness": true,
+    "witnessId": "W_IYER"
+  },
+
+  "accused": {
+    "id": "D_MALHOTRA",
+    "name": "Dev Malhotra",
+    "age": 26,
+    "occupation": "Freelance web developer, also employed part-time at a small development studio in Indiranagar.",
+    "custodyStatus": "On bail since 22 March 2025.",
+    "priorRecord": "None.",
+    "plea": "Not guilty."
+  },
+
+  "witnesses": [
+    {
+      "id": "W_IYER",
+      "name": "Ramesh Iyer",
+      "role": "witness",
+      "officialRole": "Complainant",
+      "personality": "Earnest, wounded, wants to be believed; fills gaps in his memory without noticing that he is doing it.",
+      "relationshipToAccused": "None before the transaction. Has since seen the accused's photograph in the investigation papers.",
+      "confidence": 0.95,
+      "bias": "Believes the police have already identified the culprit and that doubting the identification would mean losing his money",
+      "biasStrength": 0.6,
+      "truthfulness": 0.9,
+      "emotionalState": "anxious",
+      "reliabilityNote": "Honest but wrong. His confidence is highest exactly where his account is weakest: he is certain a man at the counter showed him the link, when the link in fact arrived by SMS, and the man he remembers is the shop's own counter assistant. He will not lie under cross-examination, but he will resist correction and become more emphatic rather than less.",
+      "knownFacts": ["F01", "F02", "F03", "F04", "F05", "F06", "F10", "F12"],
+      "unknownFacts": ["F07", "F08", "F09", "F11", "F13", "F14", "F15", "F16", "F17", "F18", "F19"],
+      "speechStyle": "Plain, slightly formal English with Kannada and Hindi cadence. Short sentences. Repeats himself when pressed. Says 'I am telling you what I saw with my own eyes.'"
+    },
+    {
+      "id": "W_DESHMUKH",
+      "name": "Priya Deshmukh",
+      "role": "witness",
+      "officialRole": "Digital forensics examiner, Regional Cyber Forensics Laboratory",
+      "personality": "Precise, unhurried, allergic to overstatement; corrects counsel of either side when a question overreads her report.",
+      "relationshipToAccused": "None. Examined the seized laptop and the hosting provider's records.",
+      "confidence": 0.8,
+      "bias": "Institutional loyalty to her own report and a mild reluctance to concede that the forty-minute custody gap could matter",
+      "biasStrength": 0.25,
+      "truthfulness": 0.95,
+      "emotionalState": "calm",
+      "reliabilityNote": "Reliable, and dangerous to whichever side asks a sloppy question. Her findings support the prosecution on attribution to the premises and support the defense on attribution to a person, because carrier-grade NAT and an open router mean her logs cannot name who sat at the keyboard.",
+      "knownFacts": ["F01", "F02", "F04", "F05", "F06", "F07", "F08", "F09", "F11", "F13", "F14"],
+      "unknownFacts": ["F03", "F10", "F12", "F15", "F16", "F17", "F18", "F19"],
+      "speechStyle": "Technical and clipped, but translates jargon when the bench asks. Answers the question actually asked and stops. Distinguishes 'consistent with' from 'shows that' unprompted."
+    },
+    {
+      "id": "W_KHURANA",
+      "name": "Vikram Khurana",
+      "role": "witness",
+      "officialRole": "Sub-Inspector, Cyber Crime Police Station — investigating officer",
+      "personality": "Experienced, defensive about procedure, convinced the case is straightforward and impatient with suggestions that it is not.",
+      "relationshipToAccused": "Arresting and investigating officer.",
+      "confidence": 0.85,
+      "bias": "Committed to the theory he filed; treats the accused's hosting account as decisive and never seriously pursued an alternative suspect",
+      "biasStrength": 0.7,
+      "truthfulness": 0.75,
+      "emotionalState": "guarded",
+      "reliabilityNote": "Will not fabricate, but will minimise. He knows the laptop sat unsealed in his vehicle for about forty minutes and that the seizure memo omits it, and he will only concede it if cross-examination puts the timings to him directly. He also knows no one ever looked at Rohit Baruah's devices.",
+      "knownFacts": ["F01", "F02", "F03", "F04", "F05", "F06", "F07", "F08", "F16", "F17", "F19"],
+      "unknownFacts": ["F09", "F10", "F11", "F12", "F13", "F14", "F15", "F18"],
+      "speechStyle": "Report language. 'As per the seizure memo', 'the said accused', 'it was found that'. Longer and more procedural when uncomfortable."
+    },
+    {
+      "id": "D_MALHOTRA",
+      "name": "Dev Malhotra",
+      "role": "defendant",
+      "officialRole": "Accused",
+      "personality": "Articulate about code and evasive about people. Protective of his flatmate out of habit and shame rather than loyalty, which reads as evasiveness.",
+      "relationshipToAccused": "Self.",
+      "confidence": 0.55,
+      "bias": "Wants to explain the technical picture and avoid naming his flatmate outright",
+      "biasStrength": 0.5,
+      "truthfulness": 0.7,
+      "emotionalState": "anxious",
+      "reliabilityNote": "Truthful about the mechanics, incomplete about the deletion. He accounts for the deleted deployment entry as routine housekeeping, which is how he has explained it to himself; he will not volunteer that he had noticed the deployment and recognised it as not his own.",
+      "knownFacts": ["F01", "F02", "F03", "F04", "F05", "F06", "F07", "F09", "F12", "F15", "F16", "F18"],
+      "unknownFacts": ["F08", "F10", "F11", "F13", "F14", "F17", "F19"],
+      "speechStyle": "Fluent urban English, drifts into developer vocabulary and has to be pulled back. Over-explains when nervous. Pauses before questions about the flat."
+    },
+    {
+      "id": "P_ESCORT",
+      "name": "Head Constable Latha Gowda",
+      "role": "police",
+      "officialRole": "Escort and court security",
+      "personality": "Watchful, silent, entirely procedural.",
+      "relationshipToAccused": "Custodial escort only.",
+      "confidence": 0.5,
+      "bias": "None material to the merits",
+      "biasStrength": 0.05,
+      "truthfulness": 0.9,
+      "emotionalState": "neutral",
+      "reliabilityNote": "Present but not a testifying witness. Listed so the frontend has a police character with knowledge scoping, and deliberately given nothing but procedural facts.",
+      "knownFacts": ["F01", "F02"],
+      "unknownFacts": ["F03", "F04", "F05", "F06", "F07", "F08", "F09", "F10", "F11", "F12", "F13", "F14", "F15", "F16", "F17", "F18", "F19"],
+      "speechStyle": "Does not speak on the merits. Single-clause procedural announcements only."
+    }
+  ],
+
+  "evidence": [
+    {
+      "id": "EXHIBIT_A",
+      "title": "Bank transaction statement, Trinity Co-operative Bank",
+      "type": "DOCUMENT",
+      "description": "Statement for the 'S. E. Traders' current account showing the Rs 2,40,000 credit at 11:22 on 10 March 2025 and the account-opening documents the bank now accepts were forged.",
+      "source": "Trinity Co-operative Bank, produced under a written requisition dated 20 March 2025.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": ["F05"]
+    },
+    {
+      "id": "EXHIBIT_B",
+      "title": "Capture of the counterfeit payment page",
+      "type": "IMAGE",
+      "description": "Full-page capture of pay-sunriseelectronics.in as served on 10 March 2025, carrying the vendor's trade name and logo.",
+      "source": "Preserved by the forensic laboratory from the hosting provider's archive.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": ["F04", "F13"]
+    },
+    {
+      "id": "EXHIBIT_C",
+      "title": "Hosting provider audit trail",
+      "type": "DOCUMENT",
+      "description": "Account activity log for the accused's hosting account, including the 02:14 deployment on 8 March and the deletion of a deployment entry on 12 March.",
+      "source": "Hosting provider's compliance desk, certified under s.65B of the Evidence Act.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": ["F07", "F08", "F09"]
+    },
+    {
+      "id": "EXHIBIT_D",
+      "title": "Seized laptop",
+      "type": "PHYSICAL",
+      "description": "The accused's laptop, seized from the Kaggadasapura flat on 18 March 2025 and imaged at the forensic laboratory.",
+      "source": "Seizure memo of the Cyber Crime Police Station dated 18 March 2025.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": ["F07", "F17"]
+    },
+    {
+      "id": "EXHIBIT_E",
+      "title": "Forensic examination report on the counterfeit page",
+      "type": "DOCUMENT",
+      "description": "Report of the digital forensics examiner comparing the counterfeit and genuine pages, recording the shared build fingerprint and expressly noting that the network logs identify a premises and not a person.",
+      "source": "Regional Cyber Forensics Laboratory, report dated 2 April 2025.",
+      "proponent": "prosecutor",
+      "status": "MARKED",
+      "relatedFacts": ["F13", "F14", "F08"]
+    },
+    {
+      "id": "EXHIBIT_F",
+      "title": "Shop counter CCTV footage, 10 March 2025",
+      "type": "VIDEO",
+      "description": "Twenty minutes of footage from the Sunrise Electronics counter camera covering 11:00 to 11:20, in which no person hands or shows a phone to the complainant and the counter assistant is visible throughout.",
+      "source": "Sunrise Electronics premises recorder, copied under a defense application.",
+      "proponent": "defense",
+      "status": "MARKED",
+      "relatedFacts": ["F10", "F11", "F12"]
+    },
+    {
+      "id": "EXHIBIT_G",
+      "title": "Bulk-SMS gateway delivery log",
+      "type": "DOCUMENT",
+      "description": "Delivery record showing the payment link sent to the complainant's number at 11:07 on 10 March 2025 from a prepaid gateway sender account, with no connection to any device seized in the case.",
+      "source": "Messaging gateway operator, produced on defense requisition.",
+      "proponent": "defense",
+      "status": "MARKED",
+      "relatedFacts": ["F11"]
+    },
+    {
+      "id": "EXHIBIT_H",
+      "title": "Recording of the complainant's first call to the vendor",
+      "type": "AUDIO",
+      "description": "Two-minute call recording from the vendor's line on 10 March in which the complainant says he 'got a message with the link', making no mention of anyone showing him a phone.",
+      "source": "Sunrise Electronics call-recording system.",
+      "proponent": "defense",
+      "status": "MARKED",
+      "relatedFacts": ["F10", "F11"]
+    },
+    {
+      "id": "EXHIBIT_I",
+      "title": "Freelance contract and invoice, November 2024",
+      "type": "DOCUMENT",
+      "description": "Signed engagement letter and paid invoice for the accused's work on the genuine Sunrise Electronics payment page, establishing an innocent reason for his code to resemble the counterfeit.",
+      "source": "Produced by the accused.",
+      "proponent": "defense",
+      "status": "MARKED",
+      "relatedFacts": ["F06", "F13"]
+    },
+    {
+      "id": "EXHIBIT_J",
+      "title": "Case diary extract on the untraced flatmate",
+      "type": "DOCUMENT",
+      "description": "Extract recording that Rohit Baruah left Bengaluru on 13 March, was never named a suspect, and that his devices were never examined.",
+      "source": "Case diary of the Cyber Crime Police Station.",
+      "proponent": "defense",
+      "status": "MARKED",
+      "relatedFacts": ["F16", "F19"]
+    }
+  ],
+
+  "prosecutionTheory": {
+    "summary": "The counterfeit page was deployed from the accused's own hosting account, from the accused's own broadband connection, in the accused's own code, and the accused deleted the record of it two days before the complaint. He built the genuine page, so he alone knew exactly what to copy and who was about to pay.",
+    "inferenceChain": [
+      "Only the account holder could deploy to that hosting account, and the account is the accused's.",
+      "The deployment came from the flat's connection at 02:14, when the accused was there.",
+      "The counterfeit reproduces a build fingerprint the accused authored.",
+      "A deployment entry was deleted on 12 March, which is consciousness of guilt.",
+      "Prior knowledge of the vendor's payment flow explains the timing of the SMS to the one customer about to pay a large sum."
+    ],
+    "reliesOn": ["EXHIBIT_A", "EXHIBIT_B", "EXHIBIT_C", "EXHIBIT_D", "EXHIBIT_E"],
+    "keyWitnesses": ["W_IYER", "W_DESHMUKH", "W_KHURANA"],
+    "weakestPoint": "Nothing places the accused's hands on the keyboard, nothing links him to the mule account or the SMS gateway, and the identification evidence from the complainant is demonstrably wrong."
+  },
+
+  "defenseTheory": {
+    "summary": "The prosecution has proved that a crime was committed using the accused's account and his flat's connection. It has not proved who committed it. An open router, a shared flat, a laptop others had used, and an untraced flatmate who left town three days after the transfer are the whole of the case for reasonable doubt.",
+    "inferenceChain": [
+      "The hosting credentials sat saved in a browser on a laptop three people used.",
+      "Carrier-grade NAT and an unsecured router mean the log names the premises, not the person.",
+      "The shared build fingerprint is equally consistent with copying a page that was publicly served.",
+      "The complainant's identification is not merely mistaken but impossible on the CCTV and the SMS log, which shows how much of this case rests on assumption.",
+      "The one obvious alternative suspect was never investigated, and the seizure of the laptop has an unexplained forty-minute gap."
+    ],
+    "reliesOn": ["EXHIBIT_F", "EXHIBIT_G", "EXHIBIT_H", "EXHIBIT_I", "EXHIBIT_J"],
+    "keyWitnesses": ["W_DESHMUKH", "W_KHURANA", "D_MALHOTRA"],
+    "weakestPoint": "The deletion on 12 March is not explained by the shared-access story, and the accused's account of it as routine housekeeping is thin."
+  },
+
+  "hiddenTruth": {
+    "_note": "ENGINE ONLY. This object exists so the simulation can score testimony for consistency and decide what a witness would really say. It must never be placed in a prompt, sent over the wire, written to a snapshot, or shown to any agent, including the judge. CaseManager strips it at construction and never returns it from any scoped view.",
+    "whatActuallyHappened": "Rohit Baruah deployed the counterfeit page. He used the accused's laptop, which had the hosting credentials saved in the browser, on the night of 7 to 8 March while the accused was asleep after the overnight release. He registered the domain and the mule account himself, using a forged identity bought online, and sent the SMS from a prepaid gateway account. He chose the complainant because he had seen the pending order in the vendor's dashboard while helping the accused with a support ticket in February.",
+    "accusedActualCulpability": "Not guilty of cheating, personation or identity theft. Guilty in fact of destroying evidence: on 12 March he saw an unfamiliar deployment in his hosting dashboard, recognised from the domain what it was, guessed who was responsible, and deleted the entry in panic. He has never said this to his own counsel.",
+    "whichTheoryIsCloser": "defense",
+    "whyTheOtherIsStillReasonable": "Every objective fact the prosecution relies on is true. The account, the connection, the code fingerprint and the deletion all really do point at the accused; the only thing wrong with the inference is that it treats access as identity. A careful prosecutor arguing this case is not being unreasonable, only overconfident.",
+    "factsNoAgentKnows": [
+      "Rohit Baruah's authorship of the counterfeit page.",
+      "That the accused recognised the deployment before deleting it.",
+      "That the forty-minute custody gap had no effect on the laptop's contents, so the defense's best procedural point is in truth a bad one."
+    ],
+    "correctVerdictOnRecord": "Acquittal on all three charges for want of proof of identity, notwithstanding that the accused is not blameless."
+  }
+}

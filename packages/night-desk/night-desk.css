@@ -1,0 +1,467 @@
+/* The immersive half lives in its own file so a pages-only app can skip it,
+   and so an app that already owns these tokens can import it alone. */
+@import "./immersive.css";
+
+/* ===========================================================================
+   NIGHT DESK — portable design pack
+   ---------------------------------------------------------------------------
+   This is the Converso look, extracted so the classroom app, the courtroom
+   simulator and the resume analyser can wear it too. It is plain CSS: no
+   Tailwind, no build step. Drop the file in and link it.
+
+       <link rel="stylesheet" href="/night-desk.css" />
+
+   It pulls in one sibling, immersive.css, for the full-screen-scene classes.
+   An app that already owns these tokens should import that file *instead* of
+   this one — see its header.
+
+   Everything below is either a token or a small class built out of tokens.
+   Nothing here knows what framework you are using.
+
+   THE THREE RULES — follow these and a new screen will match without you
+   having to copy any markup:
+
+     1. MATERIAL — panels are matte, lit from above by a single brighter
+        hairline on the top edge (--edge-lit). No backdrop-filter, no glass,
+        no ambient glow behind cards. Light has one direction: down.
+
+     2. VOICE — machine facts are mono and uppercase (duration, status,
+        language, exit code, case number, file size). Human facts are sans
+        (names, topics, what somebody actually said). The reader can tell
+        which is which before reading either.
+
+     3. SHAPE — soft for reading, sharp for working. Content cards take
+        --radius-card (20px). Tools — editors, consoles, toolbars, timelines
+        — take --radius-tool (8px). The corner says whether you are browsing
+        or building.
+
+   And one rule about restraint: --flame is the only hot colour on a screen.
+   If two things are orange, neither is important. Subject/role hues are for
+   hairlines and labels, never for large fills.
+   =========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* --- ground and material ------------------------------------------------
+     Five surfaces, not two. --ground is the page. --panel sits on it.
+     --panel-raised is a control on a panel. --panel-sunk is a well you put
+     something *into* — an editor, a console, a video frame. --ground-deep is
+     for full-bleed immersive screens (a 3D scene, a courtroom, a player). */
+  --ground: #0b0a0f;
+  --ground-deep: #070610;
+  --panel: #131118;
+  --panel-raised: #1a1822;
+  --panel-sunk: #0e0d13;
+
+  /* Three edges: resting, top-lit, and hover/active. */
+  --edge: #262331;
+  --edge-lit: #3b3650;
+  --edge-hot: #56506f;
+
+  /* --- ink -----------------------------------------------------------------
+     Slightly violet-white rather than pure white, so text sits in the same
+     world as the plum-tinted ground instead of floating above it. */
+  --ink: #ece9f2;
+  --ink-dim: #9d98ac;
+  --ink-faint: #6b667a;
+
+  /* --- the one hot colour ------------------------------------------------- */
+  --flame: #ff5a33;
+  --flame-soft: #ff8a66;
+  --flame-sunk: #3a1a12;
+
+  /* --- state -------------------------------------------------------------- */
+  --good: #4fe0a5;
+  --warn: #ffc53d;
+  --bad: #ff5470;
+
+  /* --- accents -------------------------------------------------------------
+     Seven hues, each with a pastel and a luminous sibling. The pastel is only
+     ever a solid tile behind a dark glyph; the -lit value is for hairlines,
+     labels, dots and thin bars. In the LMS these are school subjects. Reuse
+     them elsewhere by meaning, not by name: in the courtroom, --a-law-lit is
+     the bench, --a-coding-lit the defence, --a-language-lit the prosecution.
+     In the resume analyser they are the score bands. */
+  --a-maths: #ffda6e;      --a-maths-lit: #ffc53d;
+  --a-language: #bde7ff;   --a-language-lit: #56c9ff;
+  --a-science: #e5d0ff;    --a-science-lit: #b18cff;
+  --a-coding: #ffc8e4;     --a-coding-lit: #ff6fb5;
+  --a-history: #ffecc8;    --a-history-lit: #ffa05c;
+  --a-economics: #c8ffdf;  --a-economics-lit: #4fe0a5;
+  --a-law: #d4af37;        --a-law-lit: #e9c85a;
+
+  /* --- shape -------------------------------------------------------------- */
+  --radius-card: 20px;
+  --radius-tool: 8px;
+  --radius-pill: 999px;
+
+  /* --- type ----------------------------------------------------------------
+     Three roles. Display is used with restraint — headings only, never a
+     paragraph. Load them however your app loads fonts; the fallbacks below
+     keep the page readable before they arrive.
+
+       display   Bricolage Grotesque   600
+       body      Instrument Sans       400 / 500
+       mono      JetBrains Mono        400 / 500
+
+     From Google Fonts:
+     https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=Instrument+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap
+  */
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* --- motion --------------------------------------------------------------
+     One duration for anything the user caused, one for anything ambient.
+     Nothing on this design fades in on page load. */
+  --t-quick: 140ms;
+  --t-calm: 300ms;
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   VOCABULARY BRIDGE
+   ---------------------------------------------------------------------------
+   The LMS got here first, and it named the seven accents after school
+   subjects: --s-law, --s-coding-lit. This pack names them --a-law and
+   --a-coding-lit, because in the courtroom they are seats and in the classroom
+   they are languages, and a variable called "subject" reads as a lie there.
+
+   Both vocabularies are correct in their own app, so instead of renaming
+   anything and breaking a working stylesheet, each file publishes aliases for
+   the other. The consequence that matters: a component written for one app
+   drops into another and still finds its colour. tools/verify-suite.mjs checks
+   that every pair resolves to the same hex.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --s-maths: var(--a-maths);         --s-maths-lit: var(--a-maths-lit);
+  --s-language: var(--a-language);   --s-language-lit: var(--a-language-lit);
+  --s-science: var(--a-science);     --s-science-lit: var(--a-science-lit);
+  --s-coding: var(--a-coding);       --s-coding-lit: var(--a-coding-lit);
+  --s-history: var(--a-history);     --s-history-lit: var(--a-history-lit);
+  --s-economics: var(--a-economics); --s-economics-lit: var(--a-economics-lit);
+  --s-law: var(--a-law);             --s-law-lit: var(--a-law-lit);
+
+  /* Tailwind calls the body face --font-sans; this pack calls it --font-body. */
+  --font-sans: var(--font-body);
+}
+
+/* ---------------------------------------------------------------------------
+   BASE
+   --------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+h1 { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); }
+h2 { font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.75rem); }
+h3 { font-size: 1.125rem; letter-spacing: -0.01em; }
+
+p { margin: 0; }
+
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--flame);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--flame-sunk);
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------------------
+   MATERIAL — the top-lit panel, and its two variants
+   --------------------------------------------------------------------------- */
+
+.nd-panel {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+/* The single brighter hairline across the top edge. This one line is what
+   makes the surface read as lit rather than simply outlined — it is the most
+   copied detail in the system, so it lives here rather than in each app. */
+.nd-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--edge-lit) 15%,
+    var(--edge-lit) 85%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* A tool: something you work in rather than read. Sharper corner, sunk
+   surface, no top light — light does not fall into a well. */
+.nd-tool {
+  background: var(--panel-sunk);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+}
+
+.nd-rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg, var(--edge), transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   VOICE — machine facts
+   --------------------------------------------------------------------------- */
+
+.nd-meta {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.nd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-pill);
+  background: var(--panel-raised);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+
+/* Put an accent on a chip with one inline custom property:
+   <span class="nd-chip nd-chip-accent" style="--accent: var(--a-law-lit)"> */
+.nd-chip-accent {
+  border-color: color-mix(in srgb, var(--accent, var(--edge-hot)) 40%, transparent);
+  color: var(--accent, var(--ink-dim));
+  background: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   CONTROLS
+   --------------------------------------------------------------------------- */
+
+.nd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--edge-lit);
+  border-radius: var(--radius-tool);
+  background: var(--panel-raised);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--t-quick) var(--ease),
+    border-color var(--t-quick) var(--ease),
+    transform var(--t-quick) var(--ease);
+}
+
+.nd-btn:hover { border-color: var(--edge-hot); background: #211e2c; }
+.nd-btn:active { transform: translateY(1px); }
+.nd-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.nd-btn-flame {
+  background: var(--flame);
+  border-color: var(--flame);
+  color: #14100e;
+}
+.nd-btn-flame:hover { background: var(--flame-soft); border-color: var(--flame-soft); }
+
+.nd-btn-ghost {
+  background: transparent;
+  border-color: var(--edge);
+  color: var(--ink-dim);
+}
+.nd-btn-ghost:hover { border-color: var(--edge-hot); color: var(--ink); background: transparent; }
+
+.nd-btn-sm { height: 30px; padding: 0 11px; font-size: 12.5px; }
+
+.nd-btn-icon {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--ink-dim);
+}
+.nd-btn-icon:hover { color: var(--ink); }
+
+.nd-field {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 12px;
+  height: 42px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-tool);
+  background: var(--panel-sunk);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition: border-color var(--t-quick) var(--ease);
+}
+
+.nd-field::placeholder { color: var(--ink-faint); }
+.nd-field:focus,
+.nd-field:focus-within { border-color: var(--edge-hot); outline: none; }
+
+/* ---------------------------------------------------------------------------
+   SIGNATURE — the waveform
+   ---------------------------------------------------------------------------
+   Converso's one memorable element: a live bar field that means "a voice is in
+   this room". Reuse it anywhere a session is running — the classroom teacher
+   speaking, a witness answering, a résumé being read aloud — and nowhere else.
+   Four states, set with data-state: idle, connecting, listening, speaking.
+
+       <div class="nd-wave" data-state="listening">
+         <span class="nd-wave-bar" style="--i:0"></span>  … × 40
+       </div>
+   --------------------------------------------------------------------------- */
+
+.nd-wave {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  height: 34px;
+  width: 100%;
+}
+
+.nd-wave-bar {
+  width: 3px;
+  flex: none;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--edge-hot);
+  transform-origin: center;
+  transition: background var(--t-calm) var(--ease);
+}
+
+.nd-wave[data-state="idle"] .nd-wave-bar { height: 3px; background: var(--edge); }
+
+.nd-wave[data-state="connecting"] .nd-wave-bar {
+  background: var(--ink-faint);
+  animation: nd-wave-pulse 1.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 40ms);
+}
+
+.nd-wave[data-state="listening"] .nd-wave-bar {
+  background: var(--edge-hot);
+  animation: nd-wave-breathe 2.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 55ms);
+}
+
+.nd-wave[data-state="speaking"] .nd-wave-bar {
+  background: var(--flame);
+  animation: nd-wave-talk 0.62s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 32ms);
+}
+
+@keyframes nd-wave-pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+@keyframes nd-wave-breathe {
+  0%, 100% { height: 3px; }
+  50% { height: 11px; }
+}
+
+@keyframes nd-wave-talk {
+  0%, 100% { height: 4px; }
+  50% { height: 26px; }
+}
+
+/* ---------------------------------------------------------------------------
+   TRANSCRIPT BUBBLES
+   --------------------------------------------------------------------------- */
+
+.nd-bubble {
+  max-width: 88%;
+  padding: 10px 13px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.nd-bubble-them {
+  align-self: flex-start;
+  background: var(--panel-raised);
+  border: 1px solid var(--edge);
+  border-bottom-left-radius: 5px;
+  color: var(--ink);
+}
+
+.nd-bubble-you {
+  align-self: flex-end;
+  background: var(--flame-sunk);
+  border: 1px solid #52241a;
+  border-bottom-right-radius: 5px;
+  color: #ffd9cd;
+}
+
+/* ---------------------------------------------------------------------------
+   ACCESSIBILITY FLOOR
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .nd-wave-bar { height: 5px; }
+  .nd-wave[data-state="speaking"] .nd-wave-bar { background: var(--flame); }
+}
+

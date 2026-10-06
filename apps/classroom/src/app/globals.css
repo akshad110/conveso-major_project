@@ -1,0 +1,586 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===========================================================================
+   LANGUAGE ROOM — the classroom's share of the Night Desk look
+   ---------------------------------------------------------------------------
+   @converso/night-desk/night-desk.css is imported first, in layout.js, and
+   holds every token and every shared class. This file only does the three
+   things that are specific to this app:
+
+     1. Points the font tokens at the next/font families, because next/font
+        serves them under generated names that a plain "Instrument Sans" in a
+        stylesheet will never match.
+
+     2. Restates the heading rules Tailwind's preflight cancels. Preflight
+        lands in @layer base, which is compiled here, after the pack — so
+        h1 { font-size: inherit } would otherwise win.
+
+     3. Adds the board vocabulary. The whiteboard is a 1288px-wide DOM surface
+        projected onto a mesh at a distance, so its type runs 4xl–8xl where a
+        page would run base. It is the same design at a different distance,
+        not a different design: same ink, same edges, same one hot colour.
+   =========================================================================== */
+
+:root {
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", sans-serif;
+  --font-body: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+
+  /* The room's own hue. Language is the prosecution's blue in the courtroom and
+     the language tile in the LMS: same value, named for what it means here. */
+  --room: var(--a-language-lit);
+}
+
+/* Each language borrows one of the seven accents — the same mapping
+   @converso/night-desk/tokens.mjs exports, so a Japanese badge is the same pink
+   in the LMS lesson list as it is on this board. Set on any element and
+   everything inside it picks up --hue. */
+[data-language="ja"] { --hue: var(--a-coding-lit); }
+[data-language="hi"] { --hue: var(--a-history-lit); }
+[data-language="es"] { --hue: var(--a-maths-lit); }
+[data-language="fr"] { --hue: var(--a-language-lit); }
+[data-language="de"] { --hue: var(--a-science-lit); }
+[data-language="ko"] { --hue: var(--a-economics-lit); }
+
+@layer base {
+  html {
+    background: var(--ground-deep);
+  }
+
+  body {
+    background: var(--ground-deep);
+    color: var(--ink);
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   THE BOARD
+   ---------------------------------------------------------------------------
+   Everything below is read from across a room, so it is set large and given
+   more contrast than a page would need. What it does not get is decoration:
+   no gradient text, no glass, no coloured glow. A whiteboard is a matte
+   surface with marks on it, and the mesh behind this already supplies the
+   surface — which is why the board itself stays transparent.
+   --------------------------------------------------------------------------- */
+
+.board {
+  padding: 40px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  background: transparent;
+}
+
+/* The idle board. One line of display type, the language's own script beneath
+   it in the room hue — the only place a hue is allowed to be this large,
+   because it is the name of the thing you are about to practise. */
+.board-idle {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.board-idle-title {
+  font-family: var(--font-display);
+  font-size: 104px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.board-idle-native {
+  font-size: 104px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--room);
+}
+
+.board-idle-hint {
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: 26px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* A machine fact at board scale: language, register, model. Mono, uppercase,
+   hairline border — the same chip as everywhere else, scaled up. */
+.board-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 20px;
+  border: 2px solid var(--edge-lit);
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+
+/* Marked with the hue it belongs to — the register chip, mostly. */
+.board-tag-hue {
+  border-color: color-mix(in srgb, var(--hue, var(--room)) 55%, var(--edge));
+  color: var(--hue, var(--room));
+}
+
+.board-tag-note {
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+/* The English prompt. Plain ink, not a gradient: it is the thing being
+   translated, not an ornament. */
+.board-english {
+  font-size: 38px;
+  font-weight: 500;
+  color: var(--ink-dim);
+}
+
+/* The answer, in the target script. The largest, brightest thing on the board,
+   which is the whole point of the screen. */
+.board-target {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 10px;
+  font-size: 54px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.board-word {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Furigana or romaji: a pronunciation aid, so it is quieter than the word and
+   set in mono, because it is a transcription rather than speech. */
+.board-reading {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--room);
+}
+
+/* The grammar panel. A well you put something into, so --panel-sunk and the
+   tool radius: this is the part of the board you work through. */
+.board-grammar {
+  margin-top: 28px;
+  padding: 28px;
+  border: 2px solid var(--edge);
+  border-top-color: var(--edge-lit);
+  border-radius: var(--radius-card);
+  background: var(--panel-sunk);
+}
+
+.board-grammar-label {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.board-chunks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* One piece of the sentence: the fragment, what it means, what it is doing.
+   Meaning is human, so sans; the grammatical role is a label the machine
+   assigned, so mono. */
+.board-chunk {
+  padding: 14px 18px;
+  border: 1px solid var(--edge);
+  border-top-color: var(--edge-lit);
+  border-radius: var(--radius-tool);
+  background: var(--panel);
+}
+
+.board-chunk .board-target {
+  margin-top: 0;
+  font-size: 40px;
+}
+
+.board-chunk-meaning {
+  margin-top: 8px;
+  font-size: 28px;
+  color: var(--ink-dim);
+}
+
+.board-chunk-role {
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.board-source {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Play / stop. An icon button at board scale — no fill, no ring, just ink that
+   brightens, because the board should not sprout a control panel. */
+.board-speak {
+  flex: none;
+  padding: 8px;
+  border: 0;
+  background: none;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color var(--t-quick) var(--ease);
+}
+
+.board-speak:hover { color: var(--ink); }
+.board-speak[data-playing="true"] { color: var(--flame); }
+
+/* ---------------------------------------------------------------------------
+   THE RAILS — the controls that float around the board
+   --------------------------------------------------------------------------- */
+
+.board-rail {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* A choice at board scale. Inactive is a hairline on the ground; active fills
+   with the raised panel and lights its top edge — the same promotion a tab
+   gets in the LMS, just bigger. */
+.board-pill {
+  padding: 12px 34px;
+  border: 2px solid var(--edge);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition:
+    color var(--t-quick) var(--ease),
+    background var(--t-quick) var(--ease),
+    border-color var(--t-quick) var(--ease);
+}
+
+.board-pill:hover { color: var(--ink-dim); border-color: var(--edge-hot); }
+
+.board-pill[data-active="true"] {
+  background: var(--panel-raised);
+  border-color: var(--edge);
+  border-top-color: var(--edge-lit);
+  color: var(--ink);
+}
+
+.board-pill-note {
+  font-size: 24px;
+  color: var(--ink-faint);
+}
+
+/* The language picker. Two lines: the script, then the name in mono — native
+   first, because that is what you are looking for. */
+.board-lang {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 26px;
+  border: 2px solid var(--edge);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-faint);
+  line-height: 1.1;
+  cursor: pointer;
+  transition:
+    color var(--t-quick) var(--ease),
+    background var(--t-quick) var(--ease),
+    border-color var(--t-quick) var(--ease);
+}
+
+.board-lang:hover { color: var(--ink-dim); border-color: var(--edge-hot); }
+
+.board-lang[data-active="true"] {
+  background: var(--panel-raised);
+  border-color: color-mix(in srgb, var(--hue, var(--room)) 60%, var(--edge));
+  color: var(--ink);
+}
+
+.board-lang-native {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.board-lang-label {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.board-lang[data-active="true"] .board-lang-label {
+  color: var(--hue, var(--room));
+}
+
+/* The teacher choice. A photograph, so it is a tile with a lit edge rather
+   than a pill, and the name below it is a caption. */
+.board-teacher {
+  padding: 10px;
+  border: 2px solid var(--edge);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  cursor: pointer;
+  transition: border-color var(--t-quick) var(--ease);
+}
+
+.board-teacher:hover { border-color: var(--edge-hot); }
+
+.board-teacher[data-active="true"] {
+  border-color: var(--edge-lit);
+  border-top-color: var(--flame);
+}
+
+.board-teacher img {
+  display: block;
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius-tool);
+  filter: saturate(0.9);
+}
+
+.board-teacher[data-active="true"] img { filter: none; }
+
+.board-teacher-name {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ink-faint);
+}
+
+.board-teacher[data-active="true"] .board-teacher-name { color: var(--ink); }
+
+/* ---------------------------------------------------------------------------
+   THE ASK PANEL — real DOM, at real size, in front of the room
+   --------------------------------------------------------------------------- */
+
+.ask {
+  width: 100%;
+  max-width: 620px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ask-row {
+  display: flex;
+  gap: 10px;
+}
+
+.ask-row .nd-field { flex: 1 1 auto; }
+
+.ask-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 38px;
+}
+
+/* The shared waveform is built to fill a column in the LMS transcript rail.
+   Here it is an inline indicator beside a number, so it gets a fixed width. */
+.ask-status .nd-wave {
+  width: 62px;
+  height: 26px;
+  justify-content: space-between;
+}
+
+.ask-elapsed {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-dim);
+}
+
+/* ---------------------------------------------------------------------------
+   THE LESSON SEAM — only ever on screen when Converso opened this room
+   ---------------------------------------------------------------------------
+   Two things live here, and a standalone classroom renders neither: the screen
+   a student sees while their session is being opened or after it was refused,
+   and the control that ends a lesson.
+
+   The gate is a curtain rather than a panel because there is nothing behind it
+   yet — the room does not render until the handshake lands, so this is the
+   whole page. It borrows the courtroom's shape deliberately: a student who
+   pressed Start in a lesson should see one continuous act of opening whichever
+   scene they are opening.
+   --------------------------------------------------------------------------- */
+
+.lesson-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: var(--ground-deep);
+  padding: 24px;
+}
+
+.lesson-gate-inner {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+/* One hairline horizon instead of a spinner. While the handshake is in flight
+   it breathes; once it has failed it holds still, because nothing is loading. */
+.lesson-gate-rule {
+  height: 1px;
+  margin: 0 auto 28px;
+  width: 128px;
+  background: linear-gradient(90deg, transparent, var(--flame), transparent);
+}
+
+.lesson-gate[data-state="opening"] .lesson-gate-rule {
+  animation: lesson-breathe 1.8s ease-in-out infinite;
+}
+
+@keyframes lesson-breathe {
+  0%, 100% { opacity: 0.25; transform: scaleX(0.7); }
+  50%      { opacity: 1;    transform: scaleX(1); }
+}
+
+.lesson-gate-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.lesson-gate-message {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-dim);
+}
+
+.lesson-gate-actions {
+  margin-top: 26px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* The refusal code, quietly, in the face used for machine facts. A student does
+   not need it; a teacher reading over their shoulder does, and it is the
+   difference between "it broke" and a reproducible report. */
+.lesson-gate-code {
+  margin-top: 22px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* The way out. Top-left, opposite the teacher tiles, so it is never the thing
+   a hand lands on by accident while changing the room. */
+.lesson-end {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lesson-end-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lesson-gate[data-state="opening"] .lesson-gate-rule { animation: none; opacity: 0.7; }
+}
+
+/* ---------------------------------------------------------------------------
+   Scrollbars. The board scrolls; a white 24px bar is louder than the lesson.
+   --------------------------------------------------------------------------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--edge-lit) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--edge-lit);
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--edge-hot);
+}
+
+.board::-webkit-scrollbar {
+  width: 18px;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

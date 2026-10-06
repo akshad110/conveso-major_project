@@ -1,0 +1,67 @@
+# The engine on Fly.io.
+#
+# Run all three from the REPOSITORY ROOT. The Dockerfile copies from
+# apps/courtroom-engine/, so the build context has to be the root — which is
+# also why the dockerfile path below is written from the root rather than from
+# this file's own directory.
+#
+#   fly launch --no-deploy --copy-config --config deploy/fly.toml
+#   fly secrets set ANTHROPIC_API_KEY=sk-ant-...
+#   fly deploy --config deploy/fly.toml
+#
+# Rename the app before the first deploy; `converso-engine` is almost certainly
+# taken. Pick a primary_region near your students, because every turn of a
+# hearing is a round trip.
+
+app = "converso-engine"
+primary_region = "bom"
+
+[build]
+  dockerfile = "deploy/engine.Dockerfile"
+
+[env]
+  HOST = "0.0.0.0"
+  PORT = "4177"
+  COURT_CASE = "state-v-rane"
+  # offline keeps a hearing running with no model bill. Set anthropic or openai
+  # and the matching secret when you want a real model.
+  COURT_LLM_PROVIDER = "offline"
+
+[http_service]
+  internal_port = 4177
+  force_https = true
+
+  # Both of these are the opposite of Fly's default, and both matter more than
+  # they look.
+  #
+  # This process holds the whole trial — turn order, witness memory, objection
+  # state — in memory. A machine that stops mid-hearing does not resume that
+  # hearing, it forgets it. So no scaling to zero, and one machine always up.
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  # And exactly one machine, which is why there is no concurrency-based scaling
+  # rule here. State is per-process and a reconnecting socket has to come back
+  # to the process that knows its trial; the courtroom retries on a
+  # [1,2,4,8,15]s backoff and would happily reattach to a machine that has
+  # never heard of this hearing. Outgrowing one machine calls for a
+  # room-per-hearing router, not replicas.
+  [http_service.concurrency]
+    type = "connections"
+    soft_limit = 200
+    hard_limit = 250
+
+  # /api/state returns the engine's own snapshot as JSON, so this is a real
+  # readiness signal rather than a static 200 from a framework that happens to
+  # be listening.
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/api/state"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
